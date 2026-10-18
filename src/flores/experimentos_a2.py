@@ -208,12 +208,100 @@ def cola_cls(x):
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("accion", choices=["estudio", "cv"])
+    ap.add_argument("accion", choices=["estudio", "cv", "final"])
     ap.add_argument("config", type=Path)
     a = ap.parse_args()
     torch.set_num_threads(int(os.environ.get("HILOS", "2")))
     A2.mkdir(parents=True, exist_ok=True)
-    {"estudio": estudio, "cv": cv}[a.accion](a.config)
+    {"estudio": estudio, "cv": cv, "final": final}[a.accion](a.config)
+
+
+def modelo_completo(cola: ColaViT) -> torch.nn.Module:
+    """ViT completo para inferencia de extremo a extremo: bloques 0..desde-1 originales + cola ajustada."""
+    import copy as _c
+    m = _c.deepcopy(vit())
+    desde = len(m.blocks) - len(cola.bloques)
+    m.blocks = torch.nn.Sequential(*list(m.blocks[:desde]), *[_c.deepcopy(b) for b in cola.bloques])
+    m.norm = _c.deepcopy(cola.norm)
+    m.head = _c.deepcopy(cola.cabeza)
+    for blk in m.blocks:   # fusionar LoRA para medir la latencia real del modelo desplegado
+        for nom in ("qkv", "proj"):
+            capa = getattr(blk.attn, nom)
+            if hasattr(capa, "fusionar"):
+                setattr(blk.attn, nom, capa.fusionar())
+    return m.eval()
+
+
+def final(ruta: Path) -> None:
+    """Finalista: semillas 11, 22 y 33 en la partición fija; prueba abierta una sola vez."""
+    from PIL import Image
+    from sklearn.metrics import accuracy_score
+    from .ajuste_fino import cargar_vit
+    d = yaml.safe_load(ruta.read_text())
+    ide = d["id"]
+    p, y = particion()
+    tr, va, te = (np.where(p.split == s)[0] for s in ("train", "val", "test"))
+    limpio = tokens("limpio")
+    baja = tokens("baja_resolucion_x0.25")
+    deg = {k: tokens(f"{k}_test") for k in ("desenfoque_gaussiano_r2", "jpeg_calidad_20", "subexposicion_x0.5")}
+    cfg0 = Configuracion(**d["base"])
+    vistas = [tokens(f"aumentada_v{v}") for v in range(3)] if cfg0.aumentacion else []
+    g_te = p.grupo.to_numpy()[te]
+    mlflow.set_tracking_uri("sqlite:///mlflow.db")
+    mlflow.set_experiment("flores-proyecto-integrador")
+    resumen = {}
+    for s in d.get("semillas", [11, 22, 33]):
+        cfg = replace(cfg0, semilla=s)
+        nombre = f"{ide}_s{s}"
+        with mlflow.start_run(run_name=nombre):
+            mlflow.set_tags({"id": ide, "fase": "final", "pregunta": d["pregunta"]})
+            mlflow.log_params({**asdict(cfg)})
+            reg = lambda f: mlflow.log_metrics({k2: v for k2, v in f.items() if k2 != "epoca" and v == v}, step=f["epoca"])  # noqa: E731
+            modelo, res = entrenar(cfg, tr, va, y, limpio, vistas, reg)
+            zv, zt = logits(modelo, limpio[va]), logits(modelo, limpio[te])
+            t = temperatura(zv, y[va])
+            pv, pt = softmax(zv, t), softmax(zt, t)
+            u = umbral_por_precision(pv, y[va], 0.99)
+            acc = pt.max(1) >= u
+            q = metricas.calidad(y[te], pt)
+            q_sin_t = metricas.calidad(y[te], softmax(zt))
+            out = {"val": metricas.calidad(y[va], pv), "test": q, "temperatura": t,
+                   "ece_test_sin_temperatura": q_sin_t["ece"],
+                   "macro_f1_ic95": metricas.ic95_por_grupos(y[te], pt.argmax(1), g_te,
+                                                             lambda a, b: f1_score(a, b, average="macro")),
+                   "accuracy_ic95": metricas.ic95_por_grupos(y[te], pt.argmax(1), g_te, accuracy_score),
+                   "umbral_val": u, "cobertura_val": float((pv.max(1) >= u).mean()),
+                   "cobertura_test": float(acc.mean()),
+                   "precision_aceptadas_test": float((pt.argmax(1)[acc] == y[te][acc]).mean()),
+                   "mejor_epoca": res.mejor_epoca, "segundos_ft": res.segundos, "entrenables": res.entrenables}
+            rob = {"limpio": q["macro_f1"],
+                   "baja_resolucion_x0.25": f1_score(y[te], logits(modelo, baja[te]).argmax(1), average="macro")}
+            for k, x in deg.items():
+                rob[k] = f1_score(y[te], logits(modelo, x).argmax(1), average="macro")
+            out["robustez"] = rob
+            e03 = np.load(OUT / "E03_proba_test.npy").argmax(1) == y[te]
+            out["mcnemar_vs_E03"] = metricas.mcnemar_exacto(pt.argmax(1) == y[te], e03)
+            # latencia de extremo a extremo (imagen -> clase), CPU 2 hilos, lote 1
+            completo = modelo_completo(modelo)
+            _, tf = cargar_vit()
+            im0 = Image.open(Path("data/flower_photos") / p.file[te[0]]).convert("RGB")
+            with torch.inference_mode():
+                out.update(metricas.latencia_ms(lambda im: completo(tf(im)[None]), im0))
+                ok = np.allclose(completo(tf(im0)[None]).numpy(), logits(modelo, limpio[te[:1]]), atol=5e-2)
+            out["modelo_completo_coincide_con_cola"] = bool(ok)
+            np.save(A2 / f"{nombre}_proba_test.npy", pt)
+            np.save(A2 / f"{nombre}_proba_val.npy", pv)
+            pd.DataFrame(res.historial).to_csv(A2 / f"{nombre}_curvas.csv", index=False)
+            torch.save(modelo.state_dict(), A2 / f"{nombre}_mejor.pt")
+            (A2 / f"{nombre}_resultados.json").write_text(json.dumps(out, indent=2))
+            mlflow.log_metrics({f"test_{k}": v for k, v in q.items()})
+            mlflow.log_metrics({"temperatura": t, "cobertura_test": out["cobertura_test"],
+                                "p95_ms": out["p95_ms"], **{f"rob_{k}": v for k, v in rob.items()}})
+            mlflow.log_artifact(str(A2 / f"{nombre}_resultados.json"))
+            resumen[nombre] = {"test_macro_f1": q["macro_f1"], "baja_res": rob["baja_resolucion_x0.25"],
+                               "ece": q["ece"], "cobertura": out["cobertura_test"], "p95_ms": out["p95_ms"]}
+            print(json.dumps({nombre: resumen[nombre]}))
+    (A2 / f"{ide}_final_resumen.json").write_text(json.dumps(resumen, indent=2))
 
 
 if __name__ == "__main__":
