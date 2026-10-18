@@ -4,7 +4,7 @@ Técnicas Avanzadas de Modelado en IA, MIA 2026-5, Universidad de La Sabana.
 Equipo: Leonar Socarrás Molina, PhD (leonarsomo@unisabana.edu.co) y John Jairo Serrano Cifuentes, Esp. (johnseci@unisabana.edu.co).
 Docente: PhD. Oscar Alberto Rodríguez Meléndez.
 
-Este repositorio acompaña la **Actividad 1 de la Unidad 4** (diseño experimental, partición sin fuga y línea base) y servirá de base para las Actividades 2 y 3.
+Este repositorio acompaña la **Actividad 1 de la Unidad 4** (diseño experimental, partición sin fuga y línea base) y servirá de base para las Actividades 2 y 3. El conjunto es tf_flowers (TensorFlow Team, 2019) y el modelo fundacional es DINOv2 (Oquab et al., 2024).
 
 ## Estructura
 
@@ -53,14 +53,14 @@ Semillas: partición 2026; CNN 11, 22 y 33; control de etiquetas permutadas 2026
 
 - Validación cruzada agrupada por autor (k = 5, sin tocar prueba) de E03: 0,961 ± 0,009. La prueba resultó más fácil que todos los pliegues; la Actividad 2 seleccionará modelos con esta CV.
 - Robustez de E03: desenfoque 0,977; JPEG 20 0,988; subexposición 0,987; resolución 1/4 0,954.
-- La partición agrupada elimina la contaminación que una partición aleatoria introduciría en 74,3 % de las fotos de prueba (autor visto en entrenamiento).
+- La partición agrupada elimina la contaminación que una partición aleatoria introduciría en 74,3 % de las fotos de prueba (autor visto en entrenamiento), el problema que describen Scikit-learn Developers (s. f.) para datos agrupados.
 
 ## Documentos
 
 - `docs/U4A1_Plan_experimental_Grupo15.pdf`: plan experimental entregado (6 páginas).
 - `docs/U4A1_Fundamentacion_teorica_Grupo15.pdf`: fundamentación teórica y técnica (APA 7).
-- `docs/datasheet_tf_flowers.md`: hoja de datos.
-- `docs/ficha_modelo_E03.md`: ficha del modelo de la línea base E03 (borrador; versión final en la Actividad 2).
+- `docs/datasheet_tf_flowers.md`: hoja de datos según Gebru et al. (2021).
+- `docs/ficha_modelo_E03.md`: ficha del modelo de la línea base E03 según Mitchell et al. (2019) (borrador; versión final en la Actividad 2).
 
 ## Datos y licencia
 
@@ -68,4 +68,18 @@ Las imágenes **no** se incluyen. Cada foto conserva su licencia CC-BY 2.0 y la 
 
 ## Uso previsto y límites
 
-Prototipo académico para clasificar cinco flores comunes en fotos de aficionados y abstenerse cuando la confianza calibrada es baja. No apto para decisiones sobre toxicidad, comestibilidad, uso medicinal o conservación, ni para especies fuera de las cinco clases.
+Prototipo académico para clasificar cinco flores comunes en fotos de aficionados y abstenerse cuando la confianza calibrada es baja (Guo et al., 2017). No apto para decisiones sobre toxicidad, comestibilidad, uso medicinal o conservación, ni para especies fuera de las cinco clases.
+
+## Referencias
+
+Gebru, T., Morgenstern, J., Vecchione, B., Vaughan, J. W., Wallach, H., Daumé III, H., & Crawford, K. (2021). Datasheets for datasets. *Communications of the ACM, 64*(12), 86-92. https://doi.org/10.1145/3458723
+
+Guo, C., Pleiss, G., Sun, Y., & Weinberger, K. Q. (2017). On calibration of modern neural networks. En *Proceedings of the 34th International Conference on Machine Learning* (Vol. 70, pp. 1321-1330). PMLR. https://proceedings.mlr.press/v70/guo17a.html
+
+Mitchell, M., Wu, S., Zaldivar, A., Barnes, P., Vasserman, L., Hutchinson, B., Spitzer, E., Raji, I. D., & Gebru, T. (2019). Model cards for model reporting. En *Proceedings of the Conference on Fairness, Accountability, and Transparency* (pp. 220-229). ACM. https://doi.org/10.1145/3287560.3287596
+
+Oquab, M., Darcet, T., Moutakanni, T., Vo, H., Szafraniec, M., Khalidov, V., Fernandez, P., Haziza, D., Massa, F., El-Nouby, A., Assran, M., Ballas, N., Galuba, W., Howes, R., Huang, P.-Y., Li, S.-W., Misra, I., Rabbat, M., Sharma, V., ... Bojanowski, P. (2024). DINOv2: Learning robust visual features without supervision. *Transactions on Machine Learning Research*. https://arxiv.org/abs/2304.07193
+
+Scikit-learn Developers. (s. f.). *Cross-validation: Evaluating estimator performance*. https://scikit-learn.org/stable/modules/cross_validation.html
+
+TensorFlow Team. (2019). *Flowers* [Conjunto de datos]. TensorFlow Datasets. https://www.tensorflow.org/datasets/catalog/tf_flowers

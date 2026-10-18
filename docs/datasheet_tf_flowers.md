@@ -8,7 +8,7 @@ Autores de la hoja: Leonar Socarrás Molina, PhD, y John Jairo Serrano Cifuentes
 
 - Propósito declarado: archivo `flower_photos.tgz` publicado por el equipo de TensorFlow como material de tutoriales de clasificación de imágenes (TensorFlow Team, 2019). No se documenta una pregunta científica ni un protocolo de muestreo.
 - Financiación y entidad: desconocido para el equipo más allá de su distribución por Google/TensorFlow.
-- Consecuencia para el proyecto: el conjunto no fue diseñado como benchmark balanceado ni como muestra de una flora regional. Sirve para estudiar transferencia de representaciones, no para validar un identificador botánico de campo.
+- Consecuencia para el proyecto: el conjunto no fue diseñado como benchmark balanceado ni como muestra de una flora regional. Sirve para estudiar transferencia de representaciones (Oquab et al., 2024). Para validar un identificador botánico de campo haría falta una muestra local con su propio protocolo de recolección (Gebru et al., 2021).
 
 ## 2. Composición
 
@@ -23,17 +23,17 @@ Autores de la hoja: Leonar Socarrás Molina, PhD, y John Jairo Serrano Cifuentes
 | Atribución | `LICENSE.txt` con 3 661 líneas: archivo, autor y URL de Flickr |
 | Autores de Flickr | 1 531 cuentas distintas; mediana 1 foto por cuenta, máximo 63; 282 cuentas aportan fotos a más de una clase |
 
-Relaciones entre instancias. Hay dependencia por autor (misma cámara, jardín, estilo y a veces la misma planta) y por casi duplicados: 22 pares con pHash a distancia de Hamming ≤ 6 que involucran 43 imágenes, y 2 copias exactas de píxeles.
+Relaciones entre instancias. Gebru et al. (2021) piden declarar las relaciones explícitas entre instancias. Aquí hay dependencia por autor (misma cámara, jardín, estilo y a veces la misma planta) y por casi duplicados: 22 pares con pHash a distancia de Hamming ≤ 6 que involucran 43 imágenes, y 2 copias exactas de píxeles. Con datos agrupados, una partición que ignora los grupos sobrestima la generalización (Scikit-learn Developers, s. f.).
 
 Errores y redundancias. La misma foto (`15922772266_1167a06620.jpg`) aparece en las carpetas de rosas y de tulipanes: etiqueta contradictoria. Nueve imágenes no tienen línea de licencia. No se auditó aún la exactitud de las etiquetas restantes; la revisión manual de errores de la Actividad 2 servirá como muestreo de ruido de etiqueta.
 
-Calidad técnica (umbrales declarados en el cuaderno): 88 imágenes casi monocromas (saturación media < 0,08; 49 de ellas dientes de león), 149 oscuras (brillo medio < 50), 32 sobreexpuestas (> 200), 21 borrosas (varianza del laplaciano < 50) y 135 con ruido alto (sigma de Immerkær > 15).
+Calidad técnica (umbrales declarados en el cuaderno): 88 imágenes casi monocromas (saturación media < 0,08; 49 de ellas dientes de león), 149 oscuras (brillo medio < 50), 32 sobreexpuestas (> 200), 21 borrosas (varianza del laplaciano < 50) y 135 con ruido alto (sigma de Immerkær > 15; Immerkær, 1996).
 
-Personas y datos sensibles. Algunas fotos incluyen personas o entornos domésticos de forma incidental. El archivo de licencias contiene nombres de usuario de Flickr, que la licencia CC-BY obliga a conservar como atribución. El proyecto no los usa como variable predictiva; solo como clave de agrupamiento para evitar fuga.
+Personas y datos sensibles. Algunas fotos incluyen personas o entornos domésticos de forma incidental. El archivo de licencias contiene nombres de usuario de Flickr, que la licencia CC-BY obliga a conservar como atribución. El proyecto no los usa como variable predictiva; solo como variable de agrupamiento para evitar fuga.
 
 ## 3. Proceso de recolección
 
-Fotografías publicadas en Flickr bajo CC-BY 2.0 y reunidas por terceros. Criterio de selección, periodo y revisión ética: desconocido para el equipo. La licencia autoriza el reuso de la obra, pero no equivale al consentimiento de las personas que puedan aparecer en ella.
+Fotografías publicadas en Flickr bajo CC-BY 2.0 y reunidas por terceros. Criterio de selección, periodo y revisión ética: desconocido para el equipo. La licencia autoriza el reuso de la obra, pero no equivale al consentimiento de las personas que puedan aparecer en ella; por eso la privacidad se gestiona como riesgo (National Institute of Standards and Technology [NIST], 2023).
 
 ## 4. Preprocesamiento, limpieza y etiquetado (capa del equipo)
 
@@ -48,7 +48,7 @@ Los datos crudos no se modifican. Todo lo derivado se reconstruye con `scripts/`
 ## 5. Usos
 
 - Uso previsto: docencia y comparación de estrategias de transferencia para clasificación cerrada de cinco flores en fotografías de aficionados.
-- Usos desaconsejados: decidir sobre comestibilidad, toxicidad, valor medicinal o estado de conservación de plantas; identificar especies fuera de las cinco clases; inferir algo sobre las personas o los lugares fotografiados; publicar desempeños como válidos para flora tropical sin evaluación local.
+- Usos desaconsejados: decidir sobre comestibilidad, toxicidad, valor medicinal o estado de conservación de plantas; identificar especies fuera de las cinco clases; inferir algo sobre las personas o los lugares fotografiados; publicar desempeños como válidos para flora tropical sin evaluación local. Los riesgos de uso indebido se documentan también en la ficha del modelo (Mitchell et al., 2019).
 
 ## 6. Distribución
 
@@ -61,5 +61,15 @@ El equipo mantiene solo la capa derivada (inventario, grupos, partición, exclus
 ## Referencias
 
 Gebru, T., Morgenstern, J., Vecchione, B., Vaughan, J. W., Wallach, H., Daumé III, H., & Crawford, K. (2021). Datasheets for datasets. *Communications of the ACM, 64*(12), 86-92. https://doi.org/10.1145/3458723
+
+Immerkær, J. (1996). Fast noise variance estimation. *Computer Vision and Image Understanding, 64*(2), 300-302. https://doi.org/10.1006/cviu.1996.0060
+
+Mitchell, M., Wu, S., Zaldivar, A., Barnes, P., Vasserman, L., Hutchinson, B., Spitzer, E., Raji, I. D., & Gebru, T. (2019). Model cards for model reporting. En *Proceedings of the Conference on Fairness, Accountability, and Transparency* (pp. 220-229). ACM. https://doi.org/10.1145/3287560.3287596
+
+National Institute of Standards and Technology. (2023). *Artificial intelligence risk management framework (AI RMF 1.0)* (NIST AI 100-1). https://doi.org/10.6028/NIST.AI.100-1
+
+Oquab, M., Darcet, T., Moutakanni, T., Vo, H., Szafraniec, M., Khalidov, V., Fernandez, P., Haziza, D., Massa, F., El-Nouby, A., Assran, M., Ballas, N., Galuba, W., Howes, R., Huang, P.-Y., Li, S.-W., Misra, I., Rabbat, M., Sharma, V., ... Bojanowski, P. (2024). DINOv2: Learning robust visual features without supervision. *Transactions on Machine Learning Research*. https://arxiv.org/abs/2304.07193
+
+Scikit-learn Developers. (s. f.). *Cross-validation: Evaluating estimator performance*. https://scikit-learn.org/stable/modules/cross_validation.html
 
 TensorFlow Team. (2019). *Flowers* [Conjunto de datos]. TensorFlow Datasets. https://www.tensorflow.org/datasets/catalog/tf_flowers
