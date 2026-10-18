@@ -1,0 +1,43 @@
+{
+  "val": {
+    "accuracy": 0.9507299270072993,
+    "macro_f1": 0.9497215705197535,
+    "balanced_acc": 0.94835648944219,
+    "log_loss": 0.14963564276695251,
+    "ece": 0.022911735912309092,
+    "recall_daisy": 0.967741935483871,
+    "recall_dandelion": 0.9776119402985075,
+    "recall_roses": 0.875,
+    "recall_sunflowers": 0.9714285714285714,
+    "recall_tulips": 0.95
+  },
+  "test": {
+    "accuracy": 0.9872029250457038,
+    "macro_f1": 0.9865574823393957,
+    "balanced_acc": 0.9855659309564233,
+    "log_loss": 0.03930985927581787,
+    "ece": 0.008559978149926638,
+    "recall_daisy": 0.967741935483871,
+    "recall_dandelion": 1.0,
+    "recall_roses": 0.968421052631579,
+    "recall_sunflowers": 1.0,
+    "recall_tulips": 0.9916666666666667,
+    "macro_f1_ic95": [
+      0.9710687635267116,
+      0.9972173314744897
+    ],
+    "accuracy_ic95": [
+      0.9729719569193254,
+      0.9970846975659087
+    ]
+  },
+  "segundos": 357.0480589866638,
+  "extra": {
+    "C_elegido": 0.1,
+    "dim": 384,
+    "parametros_backbone": 21628800,
+    "val_macro_f1_etiquetas_permutadas": 0.21133391225422576,
+    "p50_ms": 105.18413449995023,
+    "p95_ms": 140.5128341499448
+  }
+}

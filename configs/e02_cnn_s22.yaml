@@ -1,0 +1,11 @@
+id: E02_s22
+run: E02_cnn_desde_cero_s22
+familia: cnn_desde_cero
+pregunta: "¿Una CNN pequeña sin preentrenamiento supera a los descriptores clásicos?"
+semilla: 22
+lado: 96
+epocas: 30
+lote: 32
+lr: 0.001
+rotacion: 0.1
+zoom: 0.2

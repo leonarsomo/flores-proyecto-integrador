@@ -1,0 +1,4 @@
+id: E00
+run: E00_mayoritaria
+familia: mayoritaria
+pregunta: "¿Algún modelo supera la regla trivial de predecir la clase más frecuente?"

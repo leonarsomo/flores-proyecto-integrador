@@ -1,0 +1,5 @@
+id: E01
+run: E01_hog_color_lr
+familia: clasico_lr
+pregunta: "¿Hace falta deep learning, o bastan descriptores de forma y color?"
+rejilla_c: [0.01, 0.1, 1.0, 10.0]

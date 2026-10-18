@@ -1,0 +1,34 @@
+E01: macro-F1 prueba 0.5687 IC95 0.503-0.612 | acc 0.5740 | ECE 0.1197
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+E03: macro-F1 prueba 0.9866 IC95 0.971-0.997 | acc 0.9872 | ECE 0.0086
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+desenfoque_gaussiano_r2 0.9767
+jpeg_calidad_20 0.9883
+subexposicion_x0.5 0.9866
+baja_resolucion_x0.25 0.9544
+{
+  "cv_agrupada_k5": {
+    "macro_f1_pliegues": [
+      0.9700144999051943,
+      0.9482796826703561,
+      0.9653522046301972,
+      0.9668939560260371,
+      0.9529576572339613
+    ],
+    "media": 0.9606996000931491,
+    "de": 0.009499686322898123
+  },
+  "robustez_prueba_E03": {
+    "limpio": 0.9865574823393957,
+    "desenfoque_gaussiano_r2": 0.9767228178558387,
+    "jpeg_calidad_20": 0.9882634754189006,
+    "subexposicion_x0.5": 0.9865574823393957,
+    "baja_resolucion_x0.25": 0.9543971580823054,
+    "peor_caso": 0.9543971580823054,
+    "caida_relativa_peor_%": 3.2598530580123315
+  }
+}
+E02_s11: macro-F1 prueba 0.7083 IC95 0.654-0.742 | acc 0.7130 | ECE 0.0823
+E02_s22: macro-F1 prueba 0.7373 IC95 0.689-0.776 | acc 0.7441 | ECE 0.0653
+E02_s33: macro-F1 prueba 0.7088 IC95 0.668-0.739 | acc 0.7112 | ECE 0.0396
+FIN_OK

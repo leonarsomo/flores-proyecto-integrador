@@ -1,0 +1,31 @@
+{
+  "seleccion": {
+    "precision_objetivo_val": 0.99,
+    "umbral_val": 0.9019999999999999,
+    "cobertura_val": 0.9124087591240876,
+    "cobertura_test": 0.9597806215722121,
+    "precision_aceptadas_test": 0.9980952380952381
+  },
+  "mcnemar_E03_vs": {
+    "E01": {
+      "solo_A_acierta": 228,
+      "solo_B_acierta": 2,
+      "p_valor": 3.0793365812238136e-65
+    },
+    "E02_s11": {
+      "solo_A_acierta": 152,
+      "solo_B_acierta": 2,
+      "p_valor": 1.0453686543863135e-42
+    },
+    "E02_s22": {
+      "solo_A_acierta": 135,
+      "solo_B_acierta": 2,
+      "p_valor": 1.0852659758470611e-37
+    },
+    "E02_s33": {
+      "solo_A_acierta": 154,
+      "solo_B_acierta": 3,
+      "p_valor": 7.062478574331563e-42
+    }
+  }
+}

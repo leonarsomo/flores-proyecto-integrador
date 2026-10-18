@@ -1,0 +1,26 @@
+{
+  "cpu_hilos": 2,
+  "E01": {
+    "extraccion_s": 17.016837165000027,
+    "seleccion_C_s": 13.569141265999974,
+    "ajuste_final_s": 2.7292324949999625
+  },
+  "E02": {
+    "s11": {
+      "entrenamiento_30_epocas_s": 316.4614782333374
+    },
+    "s22": {
+      "entrenamiento_30_epocas_s": 328.28456139564514
+    },
+    "s33": {
+      "entrenamiento_30_epocas_s": 327.2144479751587
+    },
+    "media_s": 323.98682920138043
+  },
+  "E03": {
+    "extraccion_embeddings_s": 312.06013152900005,
+    "seleccion_C_s": 0.935135966999951,
+    "ajuste_final_s": 0.375580785000011,
+    "embeddings_iguales_a_corrida_oficial": true
+  }
+}

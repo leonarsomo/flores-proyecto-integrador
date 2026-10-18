@@ -1,0 +1,6 @@
+# Parámetros compartidos por todos los experimentos (fijos en esta ronda)
+experimento_mlflow: flores-proyecto-integrador
+raiz_datos: data/flower_photos
+particion: outputs/particion.csv
+salida: outputs
+mlflow_uri: sqlite:///mlflow.db

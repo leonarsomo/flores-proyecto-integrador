@@ -1,0 +1,61 @@
+{
+  "n_total": 3670,
+  "exclusiones": {
+    "": 3659,
+    "sin_licencia": 9,
+    "etiqueta_contradictoria": 2
+  },
+  "n_usadas": 3659,
+  "grupos": 1531,
+  "tam_grupo_max": 63,
+  "pares_casi_duplicados": 22,
+  "imagenes_en_pares": 43,
+  "conteos": {
+    "test": {
+      "daisy": 93,
+      "dandelion": 134,
+      "roses": 95,
+      "sunflowers": 105,
+      "tulips": 120
+    },
+    "train": {
+      "daisy": 447,
+      "dandelion": 627,
+      "roses": 445,
+      "sunflowers": 488,
+      "tulips": 557
+    },
+    "val": {
+      "daisy": 93,
+      "dandelion": 134,
+      "roses": 96,
+      "sunflowers": 105,
+      "tulips": 120
+    }
+  },
+  "contaminacion_por_grupos": {
+    "val": {
+      "n": 548,
+      "autor_en_train": 0,
+      "casi_duplicado_en_train": 0
+    },
+    "test": {
+      "n": 547,
+      "autor_en_train": 0,
+      "casi_duplicado_en_train": 0
+    }
+  },
+  "contaminacion_aleatoria": {
+    "val": {
+      "n": 549,
+      "autor_en_train": 376,
+      "casi_duplicado_en_train": 6
+    },
+    "test": {
+      "n": 549,
+      "autor_en_train": 408,
+      "casi_duplicado_en_train": 5
+    }
+  },
+  "grupos_compartidos_entre_particiones": 0
+}

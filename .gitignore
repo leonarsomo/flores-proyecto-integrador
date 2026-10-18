@@ -1,0 +1,17 @@
+# Datos (se descargan con el README; licencia CC-BY por imagen)
+data/flower_photos/
+data/*.tgz
+# Secretos y credenciales (nunca al repositorio)
+secrets/
+.env
+# Artefactos pesados regenerables
+outputs/*_embeddings.npy
+outputs/*.pt
+mlruns/**/artifacts/**/*.npy
+# Entorno
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+.pytest_cache/
+# Sistema
+.DS_Store

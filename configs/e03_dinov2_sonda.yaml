@@ -1,0 +1,8 @@
+id: E03
+run: E03_dinov2_vits14_sonda_lineal
+familia: sonda_dinov2
+pregunta: "¿Cuánto aporta una representación fundacional congelada sin ajuste fino?"
+backbone: vit_small_patch14_dinov2.lvd142m
+lado: 224
+rejilla_c: [0.01, 0.1, 1.0, 10.0]
+semilla: 2026
