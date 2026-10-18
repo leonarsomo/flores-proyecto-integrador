@@ -68,8 +68,9 @@ def softmax(z, t=1.0):
 
 
 def entrenar(cfg: Configuracion, idx_tr, idx_va, y, limpio, vistas, registrar=None):
+    base = vit()                          # cargar antes de sembrar: la semilla gobierna solo la cola
     torch.manual_seed(cfg.semilla)
-    modelo = ColaViT(vit(), cfg.desde, cfg.ajustar, lora_r=cfg.lora_r)
+    modelo = ColaViT(base, cfg.desde, cfg.ajustar, lora_r=cfg.lora_r, drop_path=cfg.drop_path)
     # vista 0 = limpia (fase LP y épocas pares); con aumentación se alternan las vistas guardadas
     xtr = [limpio[idx_tr]] + ([v[idx_tr] for v in vistas] if cfg.aumentacion else [])
     yt, yv = torch.from_numpy(y[idx_tr]), torch.from_numpy(y[idx_va])

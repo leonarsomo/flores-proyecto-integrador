@@ -1,6 +1,6 @@
 id: E06
 pregunta: "¿LoRA de rango 8 en los 4 últimos bloques iguala a LP-FT con muchos menos parámetros entrenables?"
-base: {ajustar: 4, lora_r: 8, aumentacion: false, optimizador: adamw, decaimiento: 0.05, epocas: 12, presupuesto_s: 900, semilla: 2026}
+base: {ajustar: 4, lora_r: 8, aumentacion: false, optimizador: adamw, decaimiento: 0.05, epocas: 6, presupuesto_s: 900, semilla: 2026}
 rejilla:
   - {lr: 1.0e-4}
   - {lr: 3.0e-4}

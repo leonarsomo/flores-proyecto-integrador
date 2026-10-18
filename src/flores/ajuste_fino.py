@@ -148,9 +148,13 @@ class ColaViT(nn.Module):
     """Bloques finales de DINOv2, norma final y cabeza lineal sobre el token de clase."""
 
     def __init__(self, vit: nn.Module, desde: int, ajustar: int, n_clases: int = 5,
-                 lora_r: int = 0, lora_alfa: float = 16.0):
+                 lora_r: int = 0, lora_alfa: float = 16.0, drop_path: float = 0.0):
         super().__init__()
         self.bloques = copy.deepcopy(vit.blocks[desde:])
+        if drop_path > 0:   # profundidad estocástica en los bloques que se ajustan (regularización)
+            for blk in list(self.bloques)[len(self.bloques) - ajustar:]:
+                blk.drop_path1 = timm.layers.DropPath(drop_path)
+                blk.drop_path2 = timm.layers.DropPath(drop_path)
         self.norm = copy.deepcopy(vit.norm)
         self.cabeza = nn.Linear(vit.embed_dim, n_clases)
         n = len(self.bloques)
@@ -187,9 +191,9 @@ class Configuracion:
     aumentacion: bool = False        # científico en E07
     optimizador: str = "adamw"       # adamw | sgd
     lr: float = 3e-5                 # tasa de los bloques (ajuste)
-    lr_cabeza: float = 1e-3          # tasa de la cabeza en la fase LP
     decaimiento: float = 0.05        # weight decay (ajuste)
-    epocas_lp: int = 30              # fase de sonda lineal (LP)
+    drop_path: float = 0.0           # profundidad estocástica en los bloques ajustados (regularización)
+    c_sonda: float = 0.1             # C de la regresión logística de la fase LP (el elegido para E03)
     epocas: int = 12                 # fase de ajuste fino (FT), tope
     presupuesto_s: float = 900       # presupuesto de tiempo de la fase FT
     lote: int = 32
@@ -222,17 +226,22 @@ def _evaluar(modelo: ColaViT, x: torch.Tensor, y: torch.Tensor, lote: int = 128)
 
 
 def sonda_lineal(modelo: ColaViT, xtr, ytr, cfg: Configuracion, g: torch.Generator) -> None:
-    """Fase LP de LP-FT (Kumar et al., 2022): se entrena solo la cabeza con la cola congelada."""
+    """Fase LP de LP-FT (Kumar et al., 2022): la misma sonda de E03 copiada en la cabeza.
+
+    Se ajusta StandardScaler + regresión logística (C = cfg.c_sonda) sobre el token de clase
+    congelado y se pliega la estandarización en los pesos, W' = W / s y b' = b - W' m, de modo
+    que el ajuste fino arranca exactamente desde la línea base E03.
+    """
+    from sklearn.linear_model import LogisticRegression
     with torch.no_grad():
         modelo.eval()
-        feats = torch.cat([modelo.representacion(xtr[i:i + 128].float()) for i in range(0, len(xtr), 128)])
-    opt = torch.optim.AdamW(modelo.cabeza.parameters(), lr=cfg.lr_cabeza, weight_decay=1e-4)
-    for _ in range(cfg.epocas_lp):
-        for b in _iterar(len(feats), 64, g):
-            loss = F.cross_entropy(modelo.cabeza(feats[b]), ytr[b])
-            opt.zero_grad()
-            loss.backward()
-            opt.step()
+        feats = torch.cat([modelo.representacion(xtr[i:i + 128].float()) for i in range(0, len(xtr), 128)]).numpy()
+    m, s = feats.mean(0), feats.std(0) + 1e-12
+    clf = LogisticRegression(C=cfg.c_sonda, max_iter=3000).fit((feats - m) / s, ytr.numpy())
+    w = clf.coef_ / s
+    with torch.no_grad():
+        modelo.cabeza.weight.copy_(torch.from_numpy(w).float())
+        modelo.cabeza.bias.copy_(torch.from_numpy(clf.intercept_ - w @ m).float())
 
 
 def ajustar(modelo: ColaViT, vistas_tr: list[torch.Tensor], ytr, xva, yva, cfg: Configuracion,

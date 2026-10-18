@@ -1,8 +1,9 @@
 id: E04
 pregunta: "¿Ajustar los 2 últimos bloques de DINOv2 (LP-FT) mejora a la sonda congelada E03?"
-# científico: ajustar = 2 · ajuste: lr · fijos: partición, 224 px, lote 32, AdamW, decaimiento 0,05, presupuesto
-base: {ajustar: 2, lora_r: 0, aumentacion: false, optimizador: adamw, decaimiento: 0.05, epocas: 12, presupuesto_s: 900, semilla: 2026}
+# científico: ajustar = 2 · ajuste: lr · fijos: partición, 224 px, lote 32, AdamW, decaimiento 0,05 · presupuesto: 15 min de CPU (2 hilos) por run, épocas = presupuesto / costo medido por época
+base: {ajustar: 2, lora_r: 0, aumentacion: false, optimizador: adamw, decaimiento: 0.05, epocas: 7, presupuesto_s: 900, semilla: 2026}
 rejilla:
   - {lr: 1.0e-5}
   - {lr: 3.0e-5}
   - {lr: 1.0e-4}
+  - {lr: 3.0e-4}
