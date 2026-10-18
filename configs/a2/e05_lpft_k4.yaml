@@ -1,0 +1,7 @@
+id: E05
+pregunta: "¿Ajustar 4 bloques ayuda más que ajustar 2, o sobreajusta?"
+base: {ajustar: 4, lora_r: 0, aumentacion: false, optimizador: adamw, decaimiento: 0.05, epocas: 12, presupuesto_s: 900, semilla: 2026}
+rejilla:
+  - {lr: 1.0e-5}
+  - {lr: 3.0e-5}
+  - {lr: 1.0e-4}

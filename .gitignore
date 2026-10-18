@@ -15,3 +15,7 @@ __pycache__/
 .pytest_cache/
 # Sistema
 .DS_Store
+# Caché de tokens y pesos de la A2 (regenerables, pesados)
+outputs/cache/
+outputs/cache_log.txt
+outputs/a2/*.pt
