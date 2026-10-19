@@ -57,6 +57,29 @@ def evaluar(modelo, x, y, lote=64):
     return F.cross_entropy(z, torch.from_numpy(y)).item(), (z.argmax(1).numpy() == y).mean(), z.numpy()
 
 
+def epocas_por_presupuesto(modelo, ims_tr, ytr, aug, xva, cfg, lotes_piloto: int = 4) -> int:
+    """Mide el costo de unos lotes de entrenamiento completo y de una evaluación de validación
+    sobre una copia del modelo, y devuelve cuántas épocas caben en el presupuesto."""
+    m = copy.deepcopy(modelo)
+    for q in m.parameters():
+        q.requires_grad_(True)
+    opt = torch.optim.SGD(m.parameters(), lr=0.0)
+    m.train()
+    t = time.time()
+    for i in range(lotes_piloto):
+        b = list(range(i * cfg["lote"], (i + 1) * cfg["lote"]))
+        loss = F.cross_entropy(m(torch.stack([aug(ims_tr[j]) for j in b])), torch.from_numpy(ytr[b]))
+        opt.zero_grad()
+        loss.backward()
+        opt.step()
+    por_lote = (time.time() - t) / lotes_piloto
+    t = time.time()
+    evaluar(m, xva[:128], np.zeros(min(128, len(xva)), dtype=np.int64))
+    eval_s = (time.time() - t) * len(xva) / 128
+    epoca_s = por_lote * math.ceil(len(ytr) / cfg["lote"]) + eval_s
+    return max(1, int(cfg["presupuesto_s"] // epoca_s))
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("config", type=Path)
@@ -93,8 +116,13 @@ def main() -> None:
                 q.requires_grad_(True)
             opt = torch.optim.AdamW(cab.parameters(), lr=1e-3, weight_decay=1e-4)
             fases = [("lp", cfg["epocas_lp"], opt, None)]
-            # FT: toda la red, presupuesto de tiempo
+            # FT: toda la red. El número de épocas se fija ANTES de entrenar convirtiendo el
+            # presupuesto de tiempo en pasos (piloto de costo por lote), para que OneCycle complete
+            # su calendario y no quede truncado por el reloj (Google Developers, s. f., number of steps).
             todos = list(modelo.parameters())
+            if cfg["epocas"] == "auto":
+                cfg["epocas"] = epocas_por_presupuesto(modelo, ims_tr, y[tr], aug, xva, cfg)
+            mlflow.log_param("epocas_ft", cfg["epocas"])
             opt_ft = torch.optim.AdamW(todos, lr=cfg["lr"], weight_decay=cfg["decaimiento"])
             pasos = cfg["epocas"] * math.ceil(len(tr) / cfg["lote"])
             sch = torch.optim.lr_scheduler.OneCycleLR(opt_ft, max_lr=cfg["lr"], total_steps=pasos, pct_start=0.1)
@@ -109,7 +137,7 @@ def main() -> None:
                 for _ in range(epocas):
                     ep_glob += 1
                     modelo.train()
-                    te, tot, ok = time.time(), 0.0, 0
+                    te, tot, ok, normas = time.time(), 0.0, 0, []
                     perm = torch.randperm(len(tr), generator=g)
                     for i in range(0, len(tr), cfg["lote"]):
                         b = perm[i:i + cfg["lote"]].tolist()
@@ -119,6 +147,7 @@ def main() -> None:
                         loss = F.cross_entropy(z, yb)
                         opt_.zero_grad()
                         loss.backward()
+                        normas.append(float(torch.norm(torch.stack([q.grad.norm() for q in modelo.parameters() if q.grad is not None]))))
                         opt_.step()
                         if sch_:
                             sch_.step()
@@ -126,7 +155,9 @@ def main() -> None:
                         ok += (z.argmax(1) == yb).sum().item()
                     vl, vacc, _ = evaluar(modelo, xva, y[va])
                     fila = {"epoca": ep_glob, "fase": fase, "train_loss": tot / len(tr), "train_acc": ok / len(tr),
-                            "val_loss": vl, "val_acc": float(vacc), "seg": time.time() - te}
+                            "val_loss": vl, "val_acc": float(vacc), "seg": time.time() - te,
+                            "grad_norm_media": float(np.mean(normas)), "grad_norm_max": float(np.max(normas)),
+                            "lr_fin_epoca": float(opt_.param_groups[0]["lr"])}
                     hist.append(fila)
                     mlflow.log_metrics({k2: v for k2, v in fila.items() if k2 not in ("epoca", "fase")}, step=ep_glob)
                     print(json.dumps(fila))

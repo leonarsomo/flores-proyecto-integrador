@@ -1,7 +1,8 @@
 id: E10
 pregunta: "Bajo la misma partición y el mismo presupuesto de tiempo, ¿una CNN preentrenada ajustada por completo alcanza a DINOv2?"
 backbone: efficientnet_b0.ra_in1k
-base: {lote: 32, epocas_lp: 2, epocas: 12, presupuesto_s: 900, decaimiento: 0.05, semilla: 2026}
+base: {lote: 32, epocas_lp: 2, epocas: auto, presupuesto_s: 900, decaimiento: 0.05, semilla: 2026}
 rejilla:
+  - {lr: 1.0e-4}
   - {lr: 3.0e-4}
   - {lr: 1.0e-3}

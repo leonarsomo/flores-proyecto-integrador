@@ -1,0 +1,9 @@
+id: E04b
+pregunta: "Si el mejor checkpoint de E04 cae en la época 1 con lr 3e-4 (borde de la rejilla), ¿un entrenamiento corto de 3 épocas con la rejilla ampliada hacia arriba conserva la ganancia?"
+# Regla del Tuning Playbook: óptimo en el borde -> ampliar la rejilla; mejor checkpoint temprano -> sobran pasos.
+# científico: ajustar = 2 · ajuste: lr · fijos: 3 épocas (243 pasos), AdamW, decaimiento 0,05, lote 32, sin aumentación
+base: {ajustar: 2, lora_r: 0, aumentacion: false, optimizador: adamw, decaimiento: 0.05, epocas: 3, presupuesto_s: 900, semilla: 2026}
+rejilla:
+  - {lr: 1.0e-4}
+  - {lr: 3.0e-4}
+  - {lr: 1.0e-3}

@@ -1,0 +1,6 @@
+id: E10b
+pregunta: "La mejor tasa de E10 (1e-3) quedó en el borde de la rejilla: ¿una tasa de 3e-3 mejora o desestabiliza el ajuste de la CNN?"
+backbone: efficientnet_b0.ra_in1k
+base: {lote: 32, epocas_lp: 2, epocas: auto, presupuesto_s: 900, decaimiento: 0.05, semilla: 2026}
+rejilla:
+  - {lr: 3.0e-3}

@@ -251,7 +251,7 @@ def ajustar(modelo: ColaViT, vistas_tr: list[torch.Tensor], ytr, xva, yva, cfg: 
     sonda_lineal(modelo, vistas_tr[0], ytr, cfg, g)
     params = [q for q in modelo.parameters() if q.requires_grad]
     if cfg.optimizador == "sgd":
-        opt = torch.optim.SGD(params, lr=cfg.lr, momentum=0.9, weight_decay=cfg.decaimiento)
+        opt = torch.optim.SGD(params, lr=cfg.lr, momentum=0.9, nesterov=True, weight_decay=cfg.decaimiento)
     else:
         opt = torch.optim.AdamW(params, lr=cfg.lr, weight_decay=cfg.decaimiento)
     pasos = cfg.epocas * math.ceil(len(ytr) / cfg.lote)
@@ -265,20 +265,24 @@ def ajustar(modelo: ColaViT, vistas_tr: list[torch.Tensor], ytr, xva, yva, cfg: 
     for ep in range(1, cfg.epocas + 1):
         modelo.train()
         xtr = vistas_tr[(ep - 1) % len(vistas_tr)] if cfg.aumentacion else vistas_tr[0]
-        tot, ok = 0.0, 0
+        tot, ok, normas = 0.0, 0, []
         te = time.time()
         for b in _iterar(len(ytr), cfg.lote, g):
             z = modelo(xtr[b].float())
             loss = F.cross_entropy(z, ytr[b])
             opt.zero_grad()
             loss.backward()
+            # norma L2 del gradiente: diagnóstico de inestabilidad (Google Developers, s. f., FAQ)
+            normas.append(float(torch.norm(torch.stack([q.grad.norm() for q in params if q.grad is not None]))))
             opt.step()
             sched.step()
             tot += loss.item() * len(b)
             ok += (z.argmax(1) == ytr[b]).sum().item()
         vl, va, _ = _evaluar(modelo, xva, yva)
         fila = {"epoca": ep, "train_loss": tot / len(ytr), "train_acc": ok / len(ytr),
-                "val_loss": vl, "val_acc": va, "seg": time.time() - te}
+                "val_loss": vl, "val_acc": va, "seg": time.time() - te,
+                "grad_norm_media": float(np.mean(normas)), "grad_norm_max": float(np.max(normas)),
+                "lr_fin_epoca": float(sched.get_last_lr()[0])}
         res.historial.append(fila)
         if registrar:
             registrar(fila)
