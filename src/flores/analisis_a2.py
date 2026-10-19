@@ -209,7 +209,7 @@ def costo() -> pd.DataFrame:
     """Parámetros entrenables, tiempo de ajuste y latencia por configuración."""
     ent = pd.read_csv(A2 / "arquitectura_entrenables.csv", index_col=0).parametros
     filas = []
-    for ide in ("E04b", "E05", "E06", "E07", "E09a", "E09b", "E09c", "E10"):
+    for ide in ("E04b", "E09a", "E09b", "E09b2", "E09c", "E10"):
         if (A2 / f"{ide}_estudio.csv").exists():
             e = estudio(ide).sort_values("val_loss").iloc[0]
             filas.append({"estudio": ide, "run": e.run, "entrenables": int(e.entrenables), "segundos_ft": float(e.segundos_ft),
@@ -224,7 +224,7 @@ def main() -> None:
     FIG.mkdir(parents=True, exist_ok=True)
     ids = {"E04": "LP-FT k = 2, 7 épocas", "E04b": "LP-FT k = 2, 3 épocas", "E05": "LP-FT k = 4, 3 épocas",
            "E06": "LoRA r = 8, 3 épocas", "E07": "k = 2 + aumentación, 7 épocas", "E09a": "SGD Nesterov",
-           "E09b": "decaimiento 0 y 0,2", "E09c": "profundidad estocástica 0,1",
+           "E09b": "decaimiento 0", "E09b2": "decaimiento 0,2", "E09c": "profundidad estocástica 0,1",
            "E10": "EfficientNet-B0 (completo)", "E10b": "EfficientNet-B0, lr 3e-3"}
     tablas = []
     for ide in ids:
