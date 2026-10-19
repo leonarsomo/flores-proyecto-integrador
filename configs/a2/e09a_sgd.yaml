@@ -2,7 +2,6 @@ id: E09a
 pregunta: "¿SGD con momento de Nesterov (0,9) alcanza a AdamW en el ajuste de 2 bloques con 3 épocas?"
 # científico: optimizador = sgd · ajuste: lr con rango propio (SGD necesita tasas uno o dos órdenes mayores) · fijos: como E04b
 base: {ajustar: 2, lora_r: 0, aumentacion: false, optimizador: sgd, decaimiento: 0.0001, epocas: 3, presupuesto_s: 900, semilla: 2026}
+# Rejilla reducida por plazo de entrega (18 oct): tasa transferida del óptimo interior de E04b (3e-4) o de su escala propia.
 rejilla:
-  - {lr: 3.0e-3}
-  - {lr: 1.0e-2}
-  - {lr: 3.0e-2}
+  - {lr: 0.01}

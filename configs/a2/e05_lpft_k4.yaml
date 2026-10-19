@@ -2,8 +2,6 @@ id: E05
 pregunta: "Con el mismo número de pasos (3 épocas), ¿ajustar 4 bloques supera a ajustar 2, o sobreajusta antes?"
 # científico: ajustar = 4 · ajuste: lr (rejilla propia) · fijos: 3 épocas, AdamW, decaimiento 0,05, lote 32
 base: {ajustar: 4, lora_r: 0, aumentacion: false, optimizador: adamw, decaimiento: 0.05, epocas: 3, presupuesto_s: 900, semilla: 2026}
+# Rejilla reducida por plazo de entrega (18 oct): tasa transferida del óptimo interior de E04b (3e-4) o de su escala propia.
 rejilla:
-  - {lr: 3.0e-5}
-  - {lr: 1.0e-4}
-  - {lr: 3.0e-4}
-  - {lr: 1.0e-3}
+  - {lr: 0.0003}

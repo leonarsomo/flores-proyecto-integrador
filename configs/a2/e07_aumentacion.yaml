@@ -3,6 +3,6 @@ pregunta: "¿La aumentación (3 vistas guardadas: recorte, volteo, rotación, sa
 # científico: aumentacion = true · ajuste: lr · fijos: ajustar = 2, 7 épocas (los mismos pasos que E04), AdamW, decaimiento 0,05
 # comparación directa: E04 (mismas épocas, sin aumentación)
 base: {ajustar: 2, lora_r: 0, aumentacion: true, optimizador: adamw, decaimiento: 0.05, epocas: 7, presupuesto_s: 1200, semilla: 2026}
+# Rejilla reducida por plazo de entrega (18 oct): tasa transferida del óptimo interior de E04b (3e-4) o de su escala propia.
 rejilla:
-  - {lr: 1.0e-4}
-  - {lr: 3.0e-4}
+  - {lr: 0.0003}

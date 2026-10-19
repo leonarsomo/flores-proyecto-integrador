@@ -89,7 +89,10 @@ def grafico_eje(ids: dict[str, str]) -> Path:
     for ide, nombre in ids.items():
         if not (A2 / f"{ide}_estudio.csv").exists():
             continue
-        e = estudio(ide).sort_values("lr")
+        e = estudio(ide)
+        if ide == "E10" and (A2 / "E10b_estudio.csv").exists():   # punto de ampliación del borde
+            e = pd.concat([e, estudio("E10b")])
+        e = e.sort_values("lr")
         ax.plot(e.lr, e.val_loss, "-o", ms=4, label=nombre)
     ax.axhline(0.1496, color="grey", ls=":", lw=1, label="E03 sonda congelada")
     ax.set(xscale="log", xlabel="tasa de aprendizaje máxima (OneCycle)", ylabel="pérdida de validación (mejor checkpoint)")
@@ -173,19 +176,69 @@ def guardar(obj, nombre: str) -> None:
         (TAB / f"{nombre}.json").write_text(json.dumps(obj, indent=2, ensure_ascii=False))
 
 
+def fase_final(ide: str = "FIN") -> dict:
+    """Prueba (abierta una sola vez): E03 frente al finalista por clase, confusión y errores."""
+    part = pd.read_csv(OUT / "particion.csv")
+    te = np.where(part.split == "test")[0]
+    y = part.label.map({c: i for i, c in enumerate(CLASES)}).to_numpy()[te]
+    p03 = np.load(OUT / "E03_proba_test.npy")
+    res = json.loads((A2 / f"{ide}_final_resumen.json").read_text())
+    semillas = sorted(res)
+    probas = {s: np.load(A2 / f"{s}_proba_test.npy") for s in semillas}
+    sel = json.loads(Path("modelos/finalista.json").read_text())["origen"]
+    tabla = por_clase(y, p03).rename(columns=lambda c: c if c in ("clase", "soporte") else f"{c}_E03")
+    pc = [por_clase(y, p) for p in probas.values()]
+    for m in ("precision", "recall", "f1"):
+        v = np.stack([d[m] for d in pc])
+        tabla[f"{m}_fin_media"], tabla[f"{m}_fin_de"] = v.mean(0), v.std(0, ddof=1)
+    guardar(tabla, "por_clase_prueba")
+    err = analisis_errores(y, p03, probas[sel], part.file.to_numpy()[te], part.owner.to_numpy()[te])
+    guardar(err, "errores_prueba")
+    matrices_confusion(y, {"E03 (sonda congelada)": p03, f"Finalista ({sel})": probas[sel]})
+    detalle = {s: json.loads((A2 / f"{s}_resultados.json").read_text()) for s in semillas}
+    resumen = {"semillas": semillas, "publicado": sel,
+               "test_macro_f1": [detalle[s]["test"]["macro_f1"] for s in semillas],
+               "mcnemar": {s: detalle[s]["mcnemar_vs_E03"] for s in semillas},
+               "tipos_error": err.tipo.value_counts().to_dict()}
+    guardar(resumen, "final_resumen_analisis")
+    return resumen
+
+
+def costo() -> pd.DataFrame:
+    """Parámetros entrenables, tiempo de ajuste y latencia por configuración."""
+    ent = pd.read_csv(A2 / "arquitectura_entrenables.csv", index_col=0).parametros
+    filas = []
+    for ide in ("E04b", "E05", "E06", "E07", "E09a", "E09b", "E09c", "E10"):
+        if (A2 / f"{ide}_estudio.csv").exists():
+            e = estudio(ide).sort_values("val_loss").iloc[0]
+            filas.append({"estudio": ide, "run": e.run, "entrenables": int(e.entrenables), "segundos_ft": float(e.segundos_ft),
+                          "val_loss": float(e.val_loss), "val_macro_f1": float(e.val_macro_f1)})
+    df = pd.DataFrame(filas)
+    df.attrs["E03_entrenables"] = int(ent.get("E03", 1925))
+    guardar(df, "costo_y_mejor_por_estudio")
+    return df
+
+
 def main() -> None:
     FIG.mkdir(parents=True, exist_ok=True)
     ids = {"E04": "LP-FT k = 2, 7 épocas", "E04b": "LP-FT k = 2, 3 épocas", "E05": "LP-FT k = 4, 3 épocas",
-           "E06": "LoRA r = 8, 3 épocas", "E07": "k = 2 + aumentación", "E09": "optimizador y regularización",
-           "E10": "EfficientNet-B0 (completo)"}
+           "E06": "LoRA r = 8, 3 épocas", "E07": "k = 2 + aumentación, 7 épocas", "E09a": "SGD Nesterov",
+           "E09b": "decaimiento 0 y 0,2", "E09c": "profundidad estocástica 0,1",
+           "E10": "EfficientNet-B0 (completo)", "E10b": "EfficientNet-B0, lr 3e-3"}
     tablas = []
     for ide in ids:
         if (A2 / f"{ide}_estudio.csv").exists():
             curvas_estudio(ide)
             tablas.append(estudio(ide).assign(estudio=ide))
-    grafico_eje({k: v for k, v in ids.items() if k in ("E04", "E04b", "E05", "E06", "E10")})
+    grafico_eje({k: v for k, v in ids.items() if k in ("E04", "E04b", "E10")})
     if tablas:
         guardar(pd.concat(tablas, ignore_index=True), "estudios")
+    costo()
+    if (A2 / "CV_FIN_cv.csv").exists():
+        comp = {m: comparacion_pareada("CV_E03", "CV_FIN", m) for m in ("macro_f1", "macro_f1_baja_res", "ece", "cobertura")}
+        guardar(comp, "comparacion_pareada_cv")
+    if (A2 / "FIN_final_resumen.json").exists():
+        fase_final()
     print("figuras:", sorted(p.name for p in FIG.glob("*.png")))
 
 

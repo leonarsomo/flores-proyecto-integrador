@@ -1,0 +1,18 @@
+id: FIN
+pregunta: Evaluación única en prueba del finalista con tres semillas; temperatura
+  y umbral fijados en validación.
+semillas:
+- 11
+- 22
+- 33
+base:
+  ajustar: 2
+  lora_r: 0
+  aumentacion: false
+  optimizador: adamw
+  lr: 0.0003
+  decaimiento: 0.05
+  drop_path: 0.0
+  epocas: 3
+  presupuesto_s: 900
+origen: E04b_01

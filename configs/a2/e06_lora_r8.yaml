@@ -2,7 +2,6 @@ id: E06
 pregunta: "¿LoRA de rango 8 en la atención de los 4 últimos bloques iguala a LP-FT con unas 47 veces menos parámetros entrenables?"
 # científico: lora_r = 8 · ajuste: lr (la escala efectiva de LoRA exige un rango más alto) · fijos: 3 épocas, AdamW, decaimiento 0,05
 base: {ajustar: 4, lora_r: 8, aumentacion: false, optimizador: adamw, decaimiento: 0.05, epocas: 3, presupuesto_s: 900, semilla: 2026}
+# Rejilla reducida por plazo de entrega (18 oct): tasa transferida del óptimo interior de E04b (3e-4) o de su escala propia.
 rejilla:
-  - {lr: 3.0e-4}
-  - {lr: 1.0e-3}
-  - {lr: 3.0e-3}
+  - {lr: 0.001}

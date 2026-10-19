@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "Si usa este software, el modelo publicado o la capa derivada de datos (inventario, grupos y partición), cítelo con los metadatos de este archivo."
+title: "Clasificación de cinco flores con transferencia desde DINOv2: proyecto integrador"
+type: software
+authors:
+  - family-names: "Socarrás Molina"
+    given-names: "Leonar"
+    email: "leonarsomo@unisabana.edu.co"
+    affiliation: "Universidad de La Sabana"
+    orcid: "https://orcid.org/0000-0003-0601-9151"
+  - family-names: "Serrano Cifuentes"
+    given-names: "John Jairo"
+    email: "johnseci@unisabana.edu.co"
+    affiliation: "Universidad de La Sabana"
+version: 1.0.0
+date-released: 2026-10-18
+url: "https://github.com/leonarsomo/flores-proyecto-integrador"
+repository-code: "https://github.com/leonarsomo/flores-proyecto-integrador"
+license: MIT
+abstract: "Proyecto integrador del curso Técnicas Avanzadas de Modelado en IA (Maestría en Inteligencia Artificial, Universidad de La Sabana, MIA 2026-5). Clasifica cinco flores de tf_flowers con transferencia desde DINOv2 ViT-S/14, partición agrupada por autor de Flickr, ajuste fino de los bloques finales, calibración por temperatura y abstención a precisión fija. Incluye hoja de datos y ficha del modelo."
+keywords:
+  - "aprendizaje por transferencia"
+  - "DINOv2"
+  - "vision transformer"
+  - "ajuste fino"
+  - "clasificación de imágenes"
+  - "tf_flowers"
+  - "partición agrupada"
+  - "calibración"
+  - "abstención"
+  - "ficha del modelo"
+  - "hoja de datos"
+  - "reproducibilidad"

@@ -70,6 +70,71 @@ Las imágenes **no** se incluyen. Cada foto conserva su licencia CC-BY 2.0 y la 
 
 Prototipo académico para clasificar cinco flores comunes en fotos de aficionados y abstenerse cuando la confianza calibrada es baja (Guo et al., 2017). No apto para decisiones sobre toxicidad, comestibilidad, uso medicinal o conservación, ni para especies fuera de las cinco clases.
 
+## Actividad 2 y 3: ajuste fino, validación y modelo publicado
+
+La Actividad 2 compara estrategias de ajuste fino de DINOv2 ViT-S/14 frente a la sonda E03 y un contraste con EfficientNet-B0; la Actividad 3 publica el modelo final con su ficha. El finalista es un LP-FT de los bloques 10 y 11 más cabeza lineal, iniciado desde E03 (AdamW, tasa máxima 3e-4, OneCycle, 3 épocas), con temperatura y umbral de abstención fijados en validación. Sus cifras están en [`docs/ficha_modelo.md`](docs/ficha_modelo.md).
+
+### Estructura nueva
+
+```
+configs/a2/                    una YAML por estudio (e04 a e10), CV (cv_e03, cv_finalista) y evaluación final (final.yaml)
+src/flores/ajuste_fino.py      caché de tokens del bloque de corte, cola ajustable del ViT (LP-FT y LoRA), degradaciones
+src/flores/experimentos_a2.py  subcomandos estudio, cv y final; registro en MLflow y exportación del modelo
+src/flores/cnn_contraste.py    E10: contraste con EfficientNet-B0 (ImageNet) ajustada por completo, mismo protocolo
+src/flores/arquitectura.py     inventario capa por capa de ViT y CNN: formas, parámetros y partes entrenadas
+src/flores/analisis_a2.py      curvas, comparación pareada, análisis de error, tablas y figuras (lee outputs/a2)
+src/flores/predecir.py         inferencia: foto -> clase calibrada o abstención
+tests/test_ajuste_fino.py      LoRA, parámetros entrenables, cola equivalente al ViT y sonda E03 plegada
+modelos/finalista.pt           pesos de la cola (bloques 10 y 11 y cabeza) en float16
+modelos/finalista.json         bloque de corte, bloques ajustados, temperatura, umbral, criterio y SHA-256
+docs/ficha_modelo.md           ficha del modelo final (Mitchell et al., 2019)
+```
+
+### Reproducir la Actividad 2 (en orden)
+
+Requiere haber ejecutado antes la auditoría y la partición de la Actividad 1.
+
+```bash
+# 1. caché de tokens a partir del bloque 8, con 3 vistas por imagen (~12 min)
+PYTHONPATH=src python -m flores.ajuste_fino cache data/flower_photos outputs --desde 8 --vistas 3
+# 2. estudios de ajuste fino, uno por archivo (e04_lpft_k2, e05_lpft_k4, e06_lora_r8, e07_aumentacion, e09a_sgd, ...)
+HILOS=2 PYTHONPATH=src python -m flores.experimentos_a2 estudio configs/a2/<archivo>.yaml
+# 3. contraste con CNN preentrenada
+PYTHONPATH=src python -m flores.cnn_contraste configs/a2/e10_cnn_effnet.yaml
+# 4. validación cruzada agrupada k = 5 de la línea base y del finalista
+HILOS=2 PYTHONPATH=src python -m flores.experimentos_a2 cv configs/a2/cv_e03.yaml
+HILOS=2 PYTHONPATH=src python -m flores.experimentos_a2 cv configs/a2/cv_finalista.yaml
+# 5. evaluación única en prueba con 3 semillas y exportación a modelos/
+HILOS=2 PYTHONPATH=src python -m flores.experimentos_a2 final configs/a2/final.yaml
+# 6. curvas, comparación pareada, análisis de error, tablas y figuras
+PYTHONPATH=src python -m flores.analisis_a2
+# 7. inferencia con el modelo publicado
+PYTHONPATH=src python -m flores.predecir modelos/finalista.pt foto.jpg
+# 8. pruebas (14 deben pasar)
+PYTHONPATH=src python -m pytest -q tests
+```
+
+**Semillas.** Partición 2026; estudios 2026; finalista 11, 22 y 33 (se publica la de menor pérdida de validación, nunca la de mejor prueba); pliegues de la CV con `random_state` 2026, los mismos para E03 y el finalista.
+
+**Tiempos aproximados en CPU de 2 hilos.** Caché, unos 12 min; cada run de 3 épocas con 2 bloques ajustados, unos 6 min; cada run de la CNN, unos 15 min.
+
+### Verificar los pesos publicados
+
+El SHA-256 de `modelos/finalista.pt` es `{{SHA256_PESOS}}` y también consta en `modelos/finalista.json`.
+
+```bash
+shasum -a 256 modelos/finalista.pt     # en Linux: sha256sum modelos/finalista.pt
+```
+
+El valor debe coincidir exactamente; si no coincide, el archivo está incompleto o es otra versión.
+
+### Licencia y cómo citar
+
+- **Código y pesos ajustados:** licencia MIT ([`LICENSE`](LICENSE)).
+- **Fotografías:** CC-BY 2.0 por imagen, con la atribución de `data/flower_photos/LICENSE.txt`; no se redistribuyen.
+- **Pesos base de DINOv2:** Apache 2.0, descargados de Hugging Face mediante timm.
+- **Cita:** usar [`CITATION.cff`](CITATION.cff); GitHub muestra el enlace "Cite this repository" con formatos APA y BibTeX. Contacto: leonarsomo@unisabana.edu.co, johnseci@unisabana.edu.co o issues del repositorio.
+
 ## Referencias
 
 Gebru, T., Morgenstern, J., Vecchione, B., Vaughan, J. W., Wallach, H., Daumé III, H., & Crawford, K. (2021). Datasheets for datasets. *Communications of the ACM, 64*(12), 86-92. https://doi.org/10.1145/3458723

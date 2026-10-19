@@ -274,11 +274,13 @@ def final(ruta: Path) -> None:
                    "cobertura_test": float(acc.mean()),
                    "precision_aceptadas_test": float((pt.argmax(1)[acc] == y[te][acc]).mean()),
                    "mejor_epoca": res.mejor_epoca, "segundos_ft": res.segundos, "entrenables": res.entrenables}
-            rob = {"limpio": q["macro_f1"],
-                   "baja_resolucion_x0.25": f1_score(y[te], logits(modelo, baja[te]).argmax(1), average="macro")}
-            for k, x in deg.items():
-                rob[k] = f1_score(y[te], logits(modelo, x).argmax(1), average="macro")
-            out["robustez"] = rob
+            rob, cob = {"limpio": q["macro_f1"]}, {"limpio": out["cobertura_test"]}
+            for k, x in {"baja_resolucion_x0.25": baja[te], **deg}.items():
+                pk = softmax(logits(modelo, x), t)       # misma temperatura y umbral de validación
+                np.save(A2 / f"{nombre}_proba_test_{k}.npy", pk)
+                rob[k] = f1_score(y[te], pk.argmax(1), average="macro")
+                cob[k] = float((pk.max(1) >= u).mean())
+            out["robustez"], out["cobertura_degradada"] = rob, cob
             e03 = np.load(OUT / "E03_proba_test.npy").argmax(1) == y[te]
             out["mcnemar_vs_E03"] = metricas.mcnemar_exacto(pt.argmax(1) == y[te], e03)
             # latencia de extremo a extremo (imagen -> clase), CPU 2 hilos, lote 1
@@ -302,6 +304,26 @@ def final(ruta: Path) -> None:
                                "ece": q["ece"], "cobertura": out["cobertura_test"], "p95_ms": out["p95_ms"]}
             print(json.dumps({nombre: resumen[nombre]}))
     (A2 / f"{ide}_final_resumen.json").write_text(json.dumps(resumen, indent=2))
+    exportar_modelo(ide, cfg0, resumen)
+
+
+def exportar_modelo(ide: str, cfg0: Configuracion, resumen: dict) -> None:
+    """Publica en modelos/ la semilla con menor pérdida de validación (nunca se elige por prueba).
+
+    Los pesos de la cola se guardan en float16 (unos 14 MB) junto con los metadatos que necesita
+    `flores.predecir`: bloque de corte, bloques ajustados, temperatura y umbral de abstención.
+    """
+    import hashlib
+    sel = min(resumen, key=lambda n: json.loads((A2 / f"{n}_resultados.json").read_text())["val"]["log_loss"])
+    r = json.loads((A2 / f"{sel}_resultados.json").read_text())
+    dest = Path("modelos")
+    dest.mkdir(exist_ok=True)
+    sd = {k: v.half() if v.is_floating_point() else v for k, v in torch.load(A2 / f"{sel}_mejor.pt").items()}
+    torch.save(sd, dest / "finalista.pt")
+    meta = {"origen": sel, "desde": cfg0.desde, "ajustar": cfg0.ajustar, "lora_r": cfg0.lora_r,
+            "temperatura": r["temperatura"], "umbral": r["umbral_val"], "criterio": "menor log-loss de validación",
+            "sha256": hashlib.sha256((dest / "finalista.pt").read_bytes()).hexdigest()}
+    (dest / "finalista.json").write_text(json.dumps(meta, indent=2))
 
 
 if __name__ == "__main__":
