@@ -5,7 +5,7 @@ Estructura de Mitchell et al. (2019), nueve secciones. Sustituye al borrador `do
 ## 1. Detalles del modelo
 
 - **Desarrolladores:** Grupo 15, Técnicas Avanzadas de Modelado en IA (MIA 2026-5, Maestría en Inteligencia Artificial, Universidad de La Sabana): Leonar Socarrás Molina, PhD, y John Jairo Serrano Cifuentes, Esp. Docente: PhD. Óscar Alberto Rodríguez Meléndez.
-- **Fecha y versión:** 18 de octubre de 2026; versión 1.0.0, igual al tag `v1.0.0` del repositorio. Identificador MLflow: run `FIN_s33` del experimento flores-proyecto-integrador (mlflow.db).
+- **Fecha y versión:** 18 de octubre de 2026; versión 1.0.0, correspondiente a la rama main del repositorio publicada el 18 de octubre de 2026. Identificador MLflow: run `FIN_s33` del experimento flores-proyecto-integrador (mlflow.db).
 - **Arquitectura:** `vit_small_patch14_dinov2.lvd142m` de timm (21,6 M de parámetros; Oquab et al., 2024). Se ajustan los dos últimos bloques del transformador (10 y 11) y una cabeza lineal sobre el token de clase de 384 dimensiones; los bloques 0 a 9 quedan congelados. Parámetros entrenables: 3 553 157 de 21,6 M.
 - **Entrenamiento (LP-FT):** la cabeza se inicia desde la sonda lineal E03 y después se ajustan juntos cabeza y bloques. AdamW, tasa máxima 3e-4 con calendario OneCycle, decaimiento de pesos 0,05, 3 épocas, lote 32, sin aumentación ni drop path. Se guarda el estado con menor pérdida de validación. Semillas 11, 22 y 33; se publica la semilla 33, elegida por menor log-loss de validación y nunca por su resultado en prueba.
 - **Postprocesamiento:** escalado de temperatura (T = 1,158; Guo et al., 2017) y umbral de abstención sobre la probabilidad máxima calibrada (u = 0,730), ambos fijados en validación para una precisión de 99 % en las fotos aceptadas.
