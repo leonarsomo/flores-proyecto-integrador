@@ -118,9 +118,10 @@ def comparacion_pareada(a: str, b: str, metrica: str = "macro_f1") -> dict:
     d = (db[metrica] - da[metrica]).to_numpy()
     k = len(d)
     se = d.std(ddof=1) / np.sqrt(k)
-    t = stats.ttest_rel(db[metrica], da[metrica], alternative="greater")
+    alt = "less" if metrica == "ece" else "greater"     # en la ECE, menor es mejor
+    t = stats.ttest_rel(db[metrica], da[metrica], alternative=alt)
     try:
-        w = stats.wilcoxon(d, alternative="greater", method="exact").pvalue
+        w = stats.wilcoxon(d, alternative=alt, method="exact").pvalue
     except ValueError:
         w = float("nan")
     return {"metrica": metrica, "A": a, "B": b, "media_A": float(da[metrica].mean()), "de_A": float(da[metrica].std()),

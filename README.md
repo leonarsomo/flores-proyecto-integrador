@@ -85,7 +85,7 @@ src/flores/arquitectura.py     inventario capa por capa de ViT y CNN: formas, pa
 src/flores/analisis_a2.py      curvas, comparación pareada, análisis de error, tablas y figuras (lee outputs/a2)
 src/flores/predecir.py         inferencia: foto -> clase calibrada o abstención
 tests/test_ajuste_fino.py      LoRA, parámetros entrenables, cola equivalente al ViT y sonda E03 plegada
-modelos/finalista.pt           pesos de la cola (bloques 10 y 11 y cabeza) en float16
+modelos/finalista.pt           pesos de la cola en float16: bloques 8 a 11 (8 y 9 sin cambios), norma final y cabeza
 modelos/finalista.json         bloque de corte, bloques ajustados, temperatura, umbral, criterio y SHA-256
 docs/ficha_modelo.md           ficha del modelo final (Mitchell et al., 2019)
 ```
@@ -97,10 +97,14 @@ Requiere haber ejecutado antes la auditoría y la partición de la Actividad 1.
 ```bash
 # 1. caché de tokens a partir del bloque 8, con 3 vistas por imagen (~12 min)
 PYTHONPATH=src python -m flores.ajuste_fino cache data/flower_photos outputs --desde 8 --vistas 3
-# 2. estudios de ajuste fino, uno por archivo (e04_lpft_k2, e05_lpft_k4, e06_lora_r8, e07_aumentacion, e09a_sgd, ...)
+# 2. estudios de ajuste fino, uno por archivo: e04_lpft_k2, e04b_lpft_k2_corto, e09a_sgd, e09b_decaimiento,
+#    e09b2_decaimiento_alto, e09c_drop_path (e05, e06 y e07 están configurados pero no se ejecutaron por el plazo)
 HILOS=2 PYTHONPATH=src python -m flores.experimentos_a2 estudio configs/a2/<archivo>.yaml
 # 3. contraste con CNN preentrenada
 PYTHONPATH=src python -m flores.cnn_contraste configs/a2/e10_cnn_effnet.yaml
+PYTHONPATH=src python -m flores.cnn_contraste configs/a2/e10b_cnn_effnet_borde.yaml
+# 3b. regla de adopción del finalista (escribe cv_finalista.yaml y final.yaml)
+PYTHONPATH=src python scripts/a2/elegir_finalista.py
 # 4. validación cruzada agrupada k = 5 de la línea base y del finalista
 HILOS=2 PYTHONPATH=src python -m flores.experimentos_a2 cv configs/a2/cv_e03.yaml
 HILOS=2 PYTHONPATH=src python -m flores.experimentos_a2 cv configs/a2/cv_finalista.yaml
@@ -108,6 +112,8 @@ HILOS=2 PYTHONPATH=src python -m flores.experimentos_a2 cv configs/a2/cv_finalis
 HILOS=2 PYTHONPATH=src python -m flores.experimentos_a2 final configs/a2/final.yaml
 # 6. curvas, comparación pareada, análisis de error, tablas y figuras
 PYTHONPATH=src python -m flores.analisis_a2
+python scripts/a2/diagramas.py                      # diagramas de pipeline y arquitecturas
+PYTHONPATH=src python scripts/a2/rellenar_fichas.py  # métricas por subgrupo y cifras de la ficha del modelo
 # 7. inferencia con el modelo publicado
 PYTHONPATH=src python -m flores.predecir modelos/finalista.pt foto.jpg
 # 8. pruebas (14 deben pasar)
