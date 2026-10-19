@@ -30,7 +30,7 @@ echo "4c54ace7911aaffe13a365c34f650e71dd5bf1be0a58b464e5a7183e3e595d9c  flower_p
 tar xzf flower_photos.tgz && cd ..
 python src/flores/auditoria.py data/flower_photos outputs     # inventario y calidad
 python src/flores/particion.py outputs                         # grupos de fuga y partición
-python -m pytest -q tests                                      # 8 pruebas deben pasar
+python -m pytest -q tests                                      # 14 pruebas deben pasar
 python scripts/ejecutar.py configs/e00_mayoritaria.yaml configs/e01_hog_color_lr.yaml \
        configs/e03_dinov2_sonda.yaml configs/e02_cnn_s11.yaml configs/e02_cnn_s22.yaml configs/e02_cnn_s33.yaml
 python src/flores/diagnostico.py data/flower_photos outputs  # CV agrupada k=5 y robustez de E03
