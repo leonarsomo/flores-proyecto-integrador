@@ -106,5 +106,32 @@
     "d_z_cohen": 0.8557029704672374,
     "pliegues_B_mejor": 4,
     "pliegues_empate": 0
+  },
+  "precision_aceptadas": {
+    "metrica": "precision_aceptadas",
+    "A": "CV_E03",
+    "B": "CV_FIN",
+    "media_A": 0.9941627959598154,
+    "de_A": 0.0056051578853339185,
+    "media_B": 0.9861729019104665,
+    "de_B": 0.004467733155621419,
+    "dif_por_pliegue": [
+      -0.0035,
+      -0.0197,
+      -0.0102,
+      0.0021,
+      -0.0087
+    ],
+    "dif_media": -0.007989894049348889,
+    "dif_de": 0.008132630981103658,
+    "ic95": [
+      -0.018087889149261856,
+      0.00210810105056408
+    ],
+    "t_pareada_p_unilateral": 0.9535092264512071,
+    "wilcoxon_p_unilateral": 0.96875,
+    "d_z_cohen": -0.9824488616185313,
+    "pliegues_B_mejor": 1,
+    "pliegues_empate": 0
   }
 }

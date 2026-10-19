@@ -236,7 +236,7 @@ def main() -> None:
         guardar(pd.concat(tablas, ignore_index=True), "estudios")
     costo()
     if (A2 / "CV_FIN_cv.csv").exists():
-        comp = {m: comparacion_pareada("CV_E03", "CV_FIN", m) for m in ("macro_f1", "macro_f1_baja_res", "ece", "cobertura")}
+        comp = {m: comparacion_pareada("CV_E03", "CV_FIN", m) for m in ("macro_f1", "macro_f1_baja_res", "ece", "cobertura", "precision_aceptadas")}
         guardar(comp, "comparacion_pareada_cv")
     if (A2 / "FIN_final_resumen.json").exists():
         fase_final()
