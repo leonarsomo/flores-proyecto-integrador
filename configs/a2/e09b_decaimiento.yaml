@@ -1,0 +1,9 @@
+id: E09b
+pregunta: "¿Cambiar la intensidad del decaimiento de pesos de AdamW (0 o 0,2 frente a 0,05) mejora la generalización?"
+# científico: decaimiento · ajuste: lr (gráfico de aislamiento: cada valor con su propia rejilla) · fijos: como E04b
+base: {ajustar: 2, lora_r: 0, aumentacion: false, optimizador: adamw, epocas: 3, presupuesto_s: 900, semilla: 2026}
+rejilla:
+  - {decaimiento: 0.0, lr: 1.0e-4}
+  - {decaimiento: 0.0, lr: 3.0e-4}
+  - {decaimiento: 0.2, lr: 1.0e-4}
+  - {decaimiento: 0.2, lr: 3.0e-4}

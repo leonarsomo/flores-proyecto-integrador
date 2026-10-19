@@ -1,0 +1,7 @@
+id: E09c
+pregunta: "¿La profundidad estocástica (tasa 0,1 en los bloques ajustados) regulariza el ajuste de 2 bloques?"
+# científico: drop_path = 0,1 · ajuste: lr · fijos: como E04b (Huang et al., 2016)
+base: {ajustar: 2, lora_r: 0, aumentacion: false, optimizador: adamw, decaimiento: 0.05, drop_path: 0.1, epocas: 3, presupuesto_s: 900, semilla: 2026}
+rejilla:
+  - {lr: 1.0e-4}
+  - {lr: 3.0e-4}

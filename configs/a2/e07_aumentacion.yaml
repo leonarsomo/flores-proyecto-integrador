@@ -1,0 +1,8 @@
+id: E07
+pregunta: "¿La aumentación (3 vistas guardadas: recorte, volteo, rotación, saturación y tono) frena el sobreajuste de E04 y permite aprovechar 7 épocas?"
+# científico: aumentacion = true · ajuste: lr · fijos: ajustar = 2, 7 épocas (los mismos pasos que E04), AdamW, decaimiento 0,05
+# comparación directa: E04 (mismas épocas, sin aumentación)
+base: {ajustar: 2, lora_r: 0, aumentacion: true, optimizador: adamw, decaimiento: 0.05, epocas: 7, presupuesto_s: 1200, semilla: 2026}
+rejilla:
+  - {lr: 1.0e-4}
+  - {lr: 3.0e-4}
