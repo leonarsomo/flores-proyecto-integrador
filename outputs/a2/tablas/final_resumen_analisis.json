@@ -1,0 +1,35 @@
+{
+  "semillas": [
+    "FIN_s11",
+    "FIN_s22",
+    "FIN_s33"
+  ],
+  "publicado": "FIN_s33",
+  "test_macro_f1": [
+    0.986243259998932,
+    0.9824217020271206,
+    0.9807378641995441
+  ],
+  "mcnemar": {
+    "FIN_s11": {
+      "solo_A_acierta": 3,
+      "solo_B_acierta": 3,
+      "p_valor": 1.0
+    },
+    "FIN_s22": {
+      "solo_A_acierta": 3,
+      "solo_B_acierta": 5,
+      "p_valor": 0.7265625
+    },
+    "FIN_s33": {
+      "solo_A_acierta": 2,
+      "solo_B_acierta": 5,
+      "p_valor": 0.453125
+    }
+  },
+  "tipos_error": {
+    "introducido": 5,
+    "persistente": 5,
+    "corregido": 2
+  }
+}

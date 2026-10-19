@@ -5,11 +5,11 @@ Estructura de Mitchell et al. (2019), nueve secciones. Sustituye al borrador `do
 ## 1. Detalles del modelo
 
 - **Desarrolladores:** Grupo 15, Técnicas Avanzadas de Modelado en IA (MIA 2026-5, Maestría en Inteligencia Artificial, Universidad de La Sabana): Leonar Socarrás Molina, PhD, y John Jairo Serrano Cifuentes, Esp. Docente: PhD. Óscar Alberto Rodríguez Meléndez.
-- **Fecha y versión:** 18 de octubre de 2026; versión 1.0.0, igual al tag `v1.0.0` del repositorio. Identificador MLflow: {{MLFLOW_MODEL_ID}}.
+- **Fecha y versión:** 18 de octubre de 2026; versión 1.0.0, igual al tag `v1.0.0` del repositorio. Identificador MLflow: run `FIN_s33` del experimento flores-proyecto-integrador (mlflow.db).
 - **Arquitectura:** `vit_small_patch14_dinov2.lvd142m` de timm (21,6 M de parámetros; Oquab et al., 2024). Se ajustan los dos últimos bloques del transformador (10 y 11) y una cabeza lineal sobre el token de clase de 384 dimensiones; los bloques 0 a 9 quedan congelados. Parámetros entrenables: 3 553 157 de 21,6 M.
-- **Entrenamiento (LP-FT):** la cabeza se inicia desde la sonda lineal E03 y después se ajustan juntos cabeza y bloques. AdamW, tasa máxima 3e-4 con calendario OneCycle, decaimiento de pesos 0,05, 3 épocas, lote 32, sin aumentación ni drop path. Se guarda el estado con menor pérdida de validación. Semillas 11, 22 y 33; se publica la semilla {{SEMILLA_PUBLICADA}}, elegida por menor log-loss de validación y nunca por su resultado en prueba.
-- **Postprocesamiento:** escalado de temperatura (T = {{TEMPERATURA}}; Guo et al., 2017) y umbral de abstención sobre la probabilidad máxima calibrada (u = {{UMBRAL}}), ambos fijados en validación para una precisión de 99 % en las fotos aceptadas.
-- **Artefactos:** `modelos/finalista.pt` (pesos de la cola en float16, {{TAMANO_MB}} MB, SHA-256 {{SHA256_PESOS}}) y `modelos/finalista.json` (bloque de corte, bloques ajustados, temperatura, umbral, criterio de selección y hash). El resto del transformador se descarga de Hugging Face mediante timm.
+- **Entrenamiento (LP-FT):** la cabeza se inicia desde la sonda lineal E03 y después se ajustan juntos cabeza y bloques. AdamW, tasa máxima 3e-4 con calendario OneCycle, decaimiento de pesos 0,05, 3 épocas, lote 32, sin aumentación ni drop path. Se guarda el estado con menor pérdida de validación. Semillas 11, 22 y 33; se publica la semilla 33, elegida por menor log-loss de validación y nunca por su resultado en prueba.
+- **Postprocesamiento:** escalado de temperatura (T = 1,158; Guo et al., 2017) y umbral de abstención sobre la probabilidad máxima calibrada (u = 0,730), ambos fijados en validación para una precisión de 99 % en las fotos aceptadas.
+- **Artefactos:** `modelos/finalista.pt` (pesos de la cola en float16, 14,2 MB, SHA-256 0f55c4596dcc68c5f0eb5fb23c3649dff4ac12b05d9ae1a8e6d4b40ecf2c3d1e) y `modelos/finalista.json` (bloque de corte, bloques ajustados, temperatura, umbral, criterio de selección y hash). El resto del transformador se descarga de Hugging Face mediante timm.
 - **Licencias:** código y pesos ajustados bajo MIT (archivo `LICENSE`); los pesos base de DINOv2 conservan su licencia Apache 2.0 y sus avisos; fotos bajo CC-BY 2.0 por imagen.
 - **Cómo citar:** ver `CITATION.cff` en la raíz del repositorio. **Contacto:** leonarsomo@unisabana.edu.co, johnseci@unisabana.edu.co o issues en https://github.com/leonarsomo/flores-proyecto-integrador.
 
@@ -25,26 +25,26 @@ Factores relevantes no evaluables con tf_flowers: flora local del Cesar, tipo de
 
 | Familia | Nivel | n | Final (IC 95 %) | Cobertura final | E03 |
 |---|---|---|---|---|---|
-| Clase | margarita | {{N_MARGARITA}} | {{F_MARGARITA}} | {{C_MARGARITA}} | {{E03_MARGARITA}} |
-| Clase | diente de león | {{N_DIENTE}} | {{F_DIENTE}} | {{C_DIENTE}} | {{E03_DIENTE}} |
-| Clase | rosa | {{N_ROSA}} | {{F_ROSA}} | {{C_ROSA}} | {{E03_ROSA}} |
-| Clase | girasol | {{N_GIRASOL}} | {{F_GIRASOL}} | {{C_GIRASOL}} | {{E03_GIRASOL}} |
-| Clase | tulipán | {{N_TULIPAN}} | {{F_TULIPAN}} | {{C_TULIPAN}} | {{E03_TULIPAN}} |
-| Autor | con 1 foto | {{N_AUTOR_UNA}} | {{F_AUTOR_UNA}} | {{C_AUTOR_UNA}} | {{E03_AUTOR_UNA}} |
-| Autor | con varias fotos | {{N_AUTOR_VARIAS}} | {{F_AUTOR_VARIAS}} | {{C_AUTOR_VARIAS}} | {{E03_AUTOR_VARIAS}} |
-| Resolución nativa | lado menor < 200 px | {{N_RES_BAJA}} | {{F_RES_BAJA}} | {{C_RES_BAJA}} | {{E03_RES_BAJA}} |
-| Resolución nativa | lado menor ≥ 200 px | {{N_RES_ALTA}} | {{F_RES_ALTA}} | {{C_RES_ALTA}} | {{E03_RES_ALTA}} |
-| Foto casi monocroma | saturación < 0,08 | {{N_MONO}} | {{F_MONO}} | {{C_MONO}} | {{E03_MONO}} |
-| Foto casi monocroma | resto | {{N_COLOR}} | {{F_COLOR}} | {{C_COLOR}} | {{E03_COLOR}} |
-| Iluminación | oscura (brillo < 50) | {{N_OSCURA}} | {{F_OSCURA}} | {{C_OSCURA}} | {{E03_OSCURA}} |
-| Iluminación | sobreexpuesta (> 200) | {{N_SOBREEXP}} | {{F_SOBREEXP}} | {{C_SOBREEXP}} | {{E03_SOBREEXP}} |
-| Iluminación | normal | {{N_ILUM_NORMAL}} | {{F_ILUM_NORMAL}} | {{C_ILUM_NORMAL}} | {{E03_ILUM_NORMAL}} |
-| Degradación | desenfoque gaussiano r = 2 | 547 | {{ROB_DESENFOQUE}} | {{C_DESENFOQUE}} | 0,977 |
-| Degradación | JPEG calidad 20 | 547 | {{ROB_JPEG}} | {{C_JPEG}} | 0,988 |
-| Degradación | subexposición × 0,5 | 547 | {{ROB_SUBEXP}} | {{C_SUBEXP}} | 0,987 |
-| Degradación | resolución × 1/4 | 547 | {{ROB_BAJA_RES}} | {{C_BAJA_RES}} | 0,954 |
+| Clase | margarita | 93 | 0,946 (0,880 a 0,977) | 96,8 % | 0,968 |
+| Clase | diente de león | 134 | 1,000 (0,972 a 1,000) | 100,0 % | 1,000 |
+| Clase | rosa | 95 | 0,958 (0,897 a 0,984) | 94,7 % | 0,968 |
+| Clase | girasol | 105 | 0,990 (0,948 a 0,998) | 98,1 % | 1,000 |
+| Clase | tulipán | 120 | 1,000 (0,969 a 1,000) | 99,2 % | 0,992 |
+| Autor | con 1 foto | 146 | 0,973 (0,932 a 0,989) | 96,6 % | 0,993 |
+| Autor | con varias fotos | 401 | 0,985 (0,968 a 0,993) | 98,5 % | 0,985 |
+| Resolución nativa | lado menor < 200 px | 66 | 1,000 (0,945 a 1,000) | 100,0 % | 0,985 |
+| Resolución nativa | lado menor ≥ 200 px | 481 | 0,979 (0,962 a 0,989) | 97,7 % | 0,988 |
+| Foto casi monocroma | saturación < 0,08 | 15 | 1,000 (0,796 a 1,000) | 100,0 % | 1,000 |
+| Foto casi monocroma | resto | 532 | 0,981 (0,966 a 0,990) | 97,9 % | 0,987 |
+| Iluminación | oscura (brillo < 50) | 24 | 1,000 (0,862 a 1,000) | 95,8 % | 1,000 |
+| Iluminación | sobreexpuesta (> 200) | 4 | 1,000 (0,510 a 1,000) | 100,0 % | 1,000 |
+| Iluminación | normal | 519 | 0,981 (0,965 a 0,990) | 98,1 % | 0,987 |
+| Degradación | desenfoque gaussiano r = 2 | 547 | 0,974 | 96,0 % | 0,977 |
+| Degradación | JPEG calidad 20 | 547 | 0,982 | 97,3 % | 0,988 |
+| Degradación | subexposición × 0,5 | 547 | 0,985 | 98,4 % | 0,987 |
+| Degradación | resolución × 1/4 | 547 | 0,957 | 93,4 % | 0,954 |
 
-Cruces interseccionales mínimos: diente de león casi monocromo (n = {{N_DIENTE_MONO}}, exactitud {{F_DIENTE_MONO}}); resolución nativa baja con reducción a 1/4 (n = {{N_RES_BAJA}}, exactitud {{F_RES_BAJA_X025}}); confusiones rosa y tulipán en la matriz de confusión ({{CONF_ROSA_TULIPAN}} casos). Con n de decenas, los intervalos son anchos; para exactitudes se reporta también el intervalo de Wilson.
+Cruces interseccionales mínimos: diente de león casi monocromo (n = 11, exactitud 1,000); resolución nativa baja con reducción a 1/4 (n = 66, exactitud 0,955); confusiones rosa y tulipán en la matriz de confusión (2 casos). Con n de decenas, los intervalos son anchos; para exactitudes se reporta también el intervalo de Wilson.
 
 ## 4. Métricas
 
@@ -62,13 +62,13 @@ tf_flowers (TensorFlow Team, 2019): 2 564 fotos de entrenamiento y 548 de valida
 
 | Medida | E03 (línea base) | Modelo final |
 |---|---|---|
-| Macro-F1 en prueba (IC 95 % por autor) | 0,987 (0,971 a 0,997) | {{TEST_MACRO_F1}} ({{TEST_IC95}}) |
-| Macro-F1 en prueba, media ± DE entre semillas | no aplica | {{TEST_MEDIA_SEMILLAS}} ± {{TEST_DE_SEMILLAS}} |
-| Macro-F1, CV agrupada k = 5 | 0,961 ± 0,009 | {{CV_MEDIA}} ± {{CV_DE}} |
-| ECE en prueba (tras temperatura) | 0,009 | {{ECE_TEST}} |
-| Cobertura a precisión ≥ 99 % (prueba) | 96,0 % (precisión 99,8 %) | {{COBERTURA_TEST}} (precisión {{PRECISION_ACEPTADAS}}) |
-| Latencia P95 por imagen, CPU de 2 hilos | 140,5 ms | {{P95_MS}} ms |
-| Prueba de McNemar frente a E03 | no aplica | p = {{MCNEMAR_P}} |
+| Macro-F1 en prueba (IC 95 % por autor) | 0,987 (0,971 a 0,997) | 0,981 (0,964 a 0,993) |
+| Macro-F1 en prueba, media ± DE entre semillas | no aplica | 0,983 ± 0,003 |
+| Macro-F1, CV agrupada k = 5 | 0,961 ± 0,009 | 0,967 ± 0,008 |
+| ECE en prueba (tras temperatura) | 0,009 | 0,013 |
+| Cobertura a precisión ≥ 99 % (prueba) | 96,0 % (precisión 99,8 %) | 98,0 % (precisión 99,3 %) |
+| Latencia P95 por imagen, CPU de 2 hilos | 140,5 ms | 78,1 ms |
+| Prueba de McNemar frente a E03 | no aplica | p = 0,453 |
 
 La prueba resultó más fácil que todos los pliegues de la CV en la línea base; por eso la selección se hizo con la CV y la prueba se usa una sola vez.
 

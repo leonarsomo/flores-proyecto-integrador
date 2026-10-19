@@ -1,0 +1,2 @@
+run,ajustar,lora_r,aumentacion,optimizador,lr,decaimiento,drop_path,c_sonda,epocas,presupuesto_s,lote,semilla,desde,val_loss,val_macro_f1,mejor_epoca,segundos_ft,epocas_hechas,entrenables
+E09a_00,2,0,False,sgd,0.01,0.0001,0.0,0.1,3,900,32,2026,8,0.14963778853416443,0.9497215705197535,0,348.6472113132477,3,3553157

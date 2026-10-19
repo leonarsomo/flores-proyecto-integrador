@@ -1,0 +1,65 @@
+{
+  "val": {
+    "accuracy": 0.968978102189781,
+    "macro_f1": 0.9675415431399713,
+    "balanced_acc": 0.9676113671274962,
+    "log_loss": 0.09157317131757736,
+    "ece": 0.006939655346591943,
+    "recall_daisy": 0.989247311827957,
+    "recall_dandelion": 1.0,
+    "recall_roses": 0.9166666666666666,
+    "recall_sunflowers": 0.9904761904761905,
+    "recall_tulips": 0.9416666666666667
+  },
+  "test": {
+    "accuracy": 0.9817184643510055,
+    "macro_f1": 0.9807378641995441,
+    "balanced_acc": 0.9789214972916161,
+    "log_loss": 0.05063201114535332,
+    "ece": 0.012585863879655356,
+    "recall_daisy": 0.946236559139785,
+    "recall_dandelion": 1.0,
+    "recall_roses": 0.9578947368421052,
+    "recall_sunflowers": 0.9904761904761905,
+    "recall_tulips": 1.0
+  },
+  "temperatura": 1.1578646898269653,
+  "ece_test_sin_temperatura": 0.010259137402069013,
+  "macro_f1_ic95": [
+    0.9644046810573107,
+    0.9930648053330886
+  ],
+  "accuracy_ic95": [
+    0.9665354330708661,
+    0.9935494210090984
+  ],
+  "umbral_val": 0.73,
+  "cobertura_val": 0.9470802919708029,
+  "cobertura_test": 0.979890310786106,
+  "precision_aceptadas_test": 0.9925373134328358,
+  "mejor_epoca": 2,
+  "segundos_ft": 391.34571051597595,
+  "entrenables": 3553157,
+  "robustez": {
+    "limpio": 0.9807378641995441,
+    "baja_resolucion_x0.25": 0.9573188617942993,
+    "desenfoque_gaussiano_r2": 0.9738764030582212,
+    "jpeg_calidad_20": 0.9815838090921843,
+    "subexposicion_x0.5": 0.9849581685263568
+  },
+  "cobertura_degradada": {
+    "limpio": 0.979890310786106,
+    "baja_resolucion_x0.25": 0.9341864716636198,
+    "desenfoque_gaussiano_r2": 0.9597806215722121,
+    "jpeg_calidad_20": 0.9725776965265083,
+    "subexposicion_x0.5": 0.9835466179159049
+  },
+  "mcnemar_vs_E03": {
+    "solo_A_acierta": 2,
+    "solo_B_acierta": 5,
+    "p_valor": 0.453125
+  },
+  "p50_ms": 68.45209799985241,
+  "p95_ms": 78.08620100045118,
+  "modelo_completo_coincide_con_cola": true
+}

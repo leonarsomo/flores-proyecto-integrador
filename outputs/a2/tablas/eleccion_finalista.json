@@ -1,0 +1,8 @@
+{
+  "base": "E04b_01",
+  "val_loss_base": 0.0781793221831321,
+  "mejor_E09": "E09b_00",
+  "val_loss_mejor_E09": 0.0780475065112114,
+  "elegido": "E04b_01",
+  "regla": "adoptar variante solo si reduce la p\u00e9rdida de validaci\u00f3n m\u00e1s de 5 % relativo"
+}

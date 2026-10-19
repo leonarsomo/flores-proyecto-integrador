@@ -1,0 +1,9 @@
+/home/claude/a2/src/flores/experimentos_a2.py:60: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  return torch.from_numpy(np.load(CACHE / f"{nombre}_b{desde}.npy", mmap_mode="r")[:])
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+/home/claude/a2/src/flores/ajuste_fino.py:310: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  return float(log_t.exp())
+{"FIN_s11": {"test_macro_f1": 0.986243259998932, "baja_res": 0.9585047780033659, "ece": 0.014031589467085256, "cobertura": 0.9579524680073126, "p95_ms": 92.08245024983626}}
+{"FIN_s22": {"test_macro_f1": 0.9824217020271206, "baja_res": 0.9428654880180949, "ece": 0.009570403279944358, "cobertura": 0.9634369287020109, "p95_ms": 94.48553464983432}}
+{"FIN_s33": {"test_macro_f1": 0.9807378641995441, "baja_res": 0.9573188617942993, "ece": 0.012585863879655356, "cobertura": 0.979890310786106, "p95_ms": 78.08620100045118}}

@@ -126,7 +126,7 @@ PYTHONPATH=src python -m pytest -q tests
 
 ### Verificar los pesos publicados
 
-El SHA-256 de `modelos/finalista.pt` es `{{SHA256_PESOS}}` y también consta en `modelos/finalista.json`.
+El SHA-256 de `modelos/finalista.pt` es `0f55c4596dcc68c5f0eb5fb23c3649dff4ac12b05d9ae1a8e6d4b40ecf2c3d1e` y también consta en `modelos/finalista.json`.
 
 ```bash
 shasum -a 256 modelos/finalista.pt     # en Linux: sha256sum modelos/finalista.pt

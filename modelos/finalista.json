@@ -1,0 +1,10 @@
+{
+  "origen": "FIN_s33",
+  "desde": 8,
+  "ajustar": 2,
+  "lora_r": 0,
+  "temperatura": 1.1578646898269653,
+  "umbral": 0.73,
+  "criterio": "menor log-loss de validaci\u00f3n",
+  "sha256": "0f55c4596dcc68c5f0eb5fb23c3649dff4ac12b05d9ae1a8e6d4b40ecf2c3d1e"
+}

@@ -1,0 +1,12 @@
+capa,salida,parametros
+conv_stem 3x3 paso 2 + BN + SiLU,"(1, 32, 112, 112)",928
+etapa 0: 1 x DepthwiseSeparableConv,"(1, 16, 112, 112)",1448
+etapa 1: 2 x InvertedResidual,"(1, 24, 56, 56)",16714
+etapa 2: 2 x InvertedResidual,"(1, 40, 28, 28)",46640
+etapa 3: 3 x InvertedResidual,"(1, 80, 14, 14)",242930
+etapa 4: 3 x InvertedResidual,"(1, 112, 14, 14)",543148
+etapa 5: 4 x InvertedResidual,"(1, 192, 7, 7)",2026348
+etapa 6: 1 x InvertedResidual,"(1, 320, 7, 7)",717232
+conv_head 1x1 + BN + SiLU,"(1, 1280, 7, 7)",412160
+global average pooling,"(1, 1280)",0
+dropout + clasificador lineal (1280 -> 5),"(1, 5)",6405

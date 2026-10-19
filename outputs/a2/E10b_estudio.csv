@@ -1,0 +1,2 @@
+run,lote,epocas_lp,epocas,presupuesto_s,decaimiento,semilla,lr,val_loss,val_macro_f1,mejor_epoca,segundos_ft,entrenables
+E10b_00,32,2,2,900,0.05,2026,0.003,0.5084593892097473,0.8113806746040433,4,445.33785223960876,4013953

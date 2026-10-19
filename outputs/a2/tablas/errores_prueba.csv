@@ -1,0 +1,13 @@
+archivo,autor,real,pred_E03,conf_E03,pred_nuevo,conf_nuevo,tipo
+daisy/19975899671_ebc42b7865_n.jpg,99758165@N06,margarita,girasol,0.5651471614837646,margarita,0.9387035369873047,corregido
+tulips/8838354855_c474fc66a3_m.jpg,michaeljohnbutton,tulipán,diente de león,0.6868409514427185,tulipán,0.887207567691803,corregido
+daisy/107592979_aaa9cdfe78_m.jpg,calliope,margarita,margarita,0.9315983653068542,girasol,0.7597811818122864,introducido
+daisy/4563059851_45a9d21a75.jpg,tabsinthe,margarita,margarita,0.569952666759491,diente de león,0.6992647051811218,introducido
+roses/12562723334_a2e0a9e3c8_n.jpg,winnie_pix,rosa,rosa,0.6290215253829956,tulipán,0.5532079935073853,introducido
+sunflowers/16832961488_5f7e70eb5e_n.jpg,tdlucas5000,girasol,girasol,0.4609493911266327,diente de león,0.53347247838974,introducido
+daisy/530738000_4df7e4786b.jpg,jongos,margarita,margarita,0.657844066619873,girasol,0.4630506932735443,introducido
+roses/5212885371_fe27c406a2_n.jpg,surfergirl30,rosa,margarita,0.798928439617157,girasol,0.9752435088157654,persistente
+daisy/10466290366_cc72e33532.jpg,south-african-tourism,margarita,diente de león,0.874233067035675,diente de león,0.9205175042152405,persistente
+daisy/10994032453_ac7f8d9e2e.jpg,south-african-tourism,margarita,diente de león,0.8660644292831421,diente de león,0.9000043272972107,persistente
+roses/8442304572_2fdc9c7547_n.jpg,graniers,rosa,tulipán,0.5145106911659241,tulipán,0.6935465931892395,persistente
+roses/5212877807_a3ddf06a7c_n.jpg,surfergirl30,rosa,margarita,0.9468526840209961,margarita,0.40009424090385437,persistente

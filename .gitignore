@@ -20,3 +20,5 @@ outputs/cache/
 outputs/cache_log.txt
 outputs/a2/*.pt
 data/flower_photos
+outputs/a2/descartado_v0/
+outputs/a2/**/*.pt

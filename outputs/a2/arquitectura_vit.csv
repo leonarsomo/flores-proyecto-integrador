@@ -1,0 +1,17 @@
+capa,salida,parametros,bloque
+"patch_embed (conv 14x14, paso 14)","(1, 256, 384)",226176,
+token CLS + embedding posicional,"(1, 257, 384)",99072,
+"bloque 0 (LN, MHSA 6 cabezas, LayerScale, LN, MLP 384-1536-384)","(1, 257, 384)",1775232,0.0
+"bloque 1 (LN, MHSA 6 cabezas, LayerScale, LN, MLP 384-1536-384)","(1, 257, 384)",1775232,1.0
+"bloque 2 (LN, MHSA 6 cabezas, LayerScale, LN, MLP 384-1536-384)","(1, 257, 384)",1775232,2.0
+"bloque 3 (LN, MHSA 6 cabezas, LayerScale, LN, MLP 384-1536-384)","(1, 257, 384)",1775232,3.0
+"bloque 4 (LN, MHSA 6 cabezas, LayerScale, LN, MLP 384-1536-384)","(1, 257, 384)",1775232,4.0
+"bloque 5 (LN, MHSA 6 cabezas, LayerScale, LN, MLP 384-1536-384)","(1, 257, 384)",1775232,5.0
+"bloque 6 (LN, MHSA 6 cabezas, LayerScale, LN, MLP 384-1536-384)","(1, 257, 384)",1775232,6.0
+"bloque 7 (LN, MHSA 6 cabezas, LayerScale, LN, MLP 384-1536-384)","(1, 257, 384)",1775232,7.0
+"bloque 8 (LN, MHSA 6 cabezas, LayerScale, LN, MLP 384-1536-384)","(1, 257, 384)",1775232,8.0
+"bloque 9 (LN, MHSA 6 cabezas, LayerScale, LN, MLP 384-1536-384)","(1, 257, 384)",1775232,9.0
+"bloque 10 (LN, MHSA 6 cabezas, LayerScale, LN, MLP 384-1536-384)","(1, 257, 384)",1775232,10.0
+"bloque 11 (LN, MHSA 6 cabezas, LayerScale, LN, MLP 384-1536-384)","(1, 257, 384)",1775232,11.0
+LayerNorm final,"(1, 257, 384)",768,
+cabeza lineal sobre CLS (384 -> 5),"(1, 5)",1925,
