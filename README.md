@@ -4,19 +4,39 @@ Técnicas Avanzadas de Modelado en IA, MIA 2026-5, Universidad de La Sabana.
 Equipo: Leonar Socarrás Molina, PhD (leonarsomo@unisabana.edu.co) y John Jairo Serrano Cifuentes, Esp. (johnseci@unisabana.edu.co).
 Docente: PhD. Oscar Alberto Rodríguez Meléndez.
 
-Este repositorio acompaña la **Actividad 1 de la Unidad 4** (diseño experimental, partición sin fuga y línea base) y servirá de base para las Actividades 2 y 3. El conjunto es tf_flowers (TensorFlow Team, 2019) y el modelo fundacional es DINOv2 (Oquab et al., 2024).
+Este repositorio acompaña las tres actividades de la **Unidad 4**: plan experimental, partición sin fuga y líneas base (Actividad 1); ajuste fino, optimización y validación comparativa (Actividad 2); e informe final, fichas y modelo publicado (Actividad 3). El conjunto es tf_flowers (TensorFlow Team, 2019) y el modelo fundacional es DINOv2 (Oquab et al., 2024).
+
+## Verificación rápida (unos 2 minutos)
+
+```bash
+pip install -r requirements.txt
+bash verificar.sh            # SHA-256 de los pesos, 14 pruebas e inferencia con abstención
+bash verificar.sh foto.jpg   # clasificar fotos propias
+```
+
+## Reproducción de principio a fin
+
+```bash
+bash reproducir.sh --a1   # datos, partición sin fuga y líneas base (~35 min en CPU)
+bash reproducir.sh        # ciclo completo de las Actividades 1 y 2 (varias horas en CPU de 2 hilos)
+```
+
+El script descarga los datos y comprueba su SHA-256, ejecuta cada etapa en orden con las semillas declaradas en `configs/` y termina con `verificar.sh`. Los pasos sueltos se detallan más abajo.
 
 ## Estructura
 
 ```
-configs/      decisiones experimentales (una YAML por run; comun.yaml = factores fijos)
-src/flores/   auditoria.py · particion.py · modelos.py · metricas.py · experimentos.py
-scripts/      ejecutar.py (punto de entrada) · figuras.py
-tests/        pruebas de partición sin fuga y de métricas
-notebooks/    01_plan_experimental_lineas_base.ipynb (comunica la evidencia)
-docs/         datasheet_tf_flowers.md (Gebru et al., 2021)
-outputs/      inventario, grupos, partición, resultados por run, figuras
-mlflow.db     registro MLflow (SQLite) de parámetros y métricas; mlruns/ guarda los artefactos
+reproducir.sh   ciclo completo de principio a fin · verificar.sh: comprobación rápida
+configs/        decisiones experimentales (una YAML por run; comun.yaml = factores fijos; a2/ = Actividad 2)
+src/flores/     auditoria · particion · modelos · metricas · experimentos (A1)
+                ajuste_fino · cnn_contraste · experimentos_a2 · analisis_a2 · arquitectura · predecir (A2 y A3)
+scripts/        ejecutar.py · figuras.py · a2/ (elegir_finalista, diagramas, rellenar_fichas)
+tests/          14 pruebas: partición sin fuga, métricas, caché exacta, LoRA y cabeza
+notebooks/      01_plan_experimental_lineas_base.ipynb · 02_ejecucion_optimizacion_validacion.ipynb
+docs/           ficha_modelo.md (Mitchell et al., 2019) · datasheet_tf_flowers.md (Gebru et al., 2021)
+modelos/        finalista.pt (pesos float16) y finalista.json (temperatura, umbral, SHA-256)
+outputs/        inventario, partición, resultados por run, tablas y figuras
+mlflow.db       registro MLflow (SQLite); mlruns/ guarda los artefactos
 ```
 
 ## Reproducir desde cero (CPU, ~35 min)
